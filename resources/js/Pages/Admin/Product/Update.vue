@@ -243,7 +243,7 @@ export default {
         });
 
         $(this.$refs.nameInput).on('input', event => {
-          this.input.slug = slugify(event.currentTarget.value);
+          this.input.slug = slugify(event.currentTarget.value.toLowerCase());
         });
       });
     });
