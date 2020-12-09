@@ -25,9 +25,17 @@ Created: Colorib
             $('.filter__controls li').removeClass('active');
             $(this).addClass('active');
         });
+
         if ($('.property__gallery').length > 0) {
             var containerEl = document.querySelector('.property__gallery');
-            var mixer = mixitup(containerEl);
+            var mixer = mixitup(containerEl, {
+                animation: {
+                    duration: 250,
+                    nudge: false,
+                    reverseOut: true,
+                    effects: "fade translateX(40%) stagger(30ms)"
+                }
+            });
         }
     });
 

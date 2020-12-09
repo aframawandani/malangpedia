@@ -3,6 +3,7 @@
     <div class="container h-100">
       <div class="row justify-content-center align-content-center h-100">
         <div class="col-auto">
+          <h1 class="malangpedia-text">Malang<strong>Pedia</strong></h1>
           <div class="card" style="width: 360px;">
             <div class="card-body login-card-body">
               <h4 class="login-box-msg">Masuk</h4>
@@ -31,13 +32,20 @@
 </template>
 
 <style>
+.malangpedia-text {
+  font-size: 32px;
+  font-weight: 200;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
 .login-page {
   background-color: #e9ecef;
   height: 100%;
 }
 
 .login-box-msg {
-  font-size: 20px;
+  font-size: 16px;
   margin-bottom: 16px;
 }
 

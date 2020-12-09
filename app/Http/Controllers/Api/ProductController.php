@@ -12,6 +12,7 @@ use App\Http\Resources\ProductResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\CategoryCollection;
 use App\Models\Category;
+use App\Models\Product_2_Category;
 
 class ProductController extends Controller
 {
@@ -74,6 +75,18 @@ class ProductController extends Controller
                 $this->getParentCategoryCollection($parent_category, $parent_category_collection);
             }
         }
+    }
+
+    private function getParentCategoryCollectionByProduct(Product $product, &$parent_category_collection)
+    {
+        $product_2_category_array =
+        Product_2_category
+        ::where('product_id', $product->product_id)
+        ->leftJoin('categories', 'categories.category_id', '=', 'product_2_categories.category_id')
+        ->get()
+        ->all();
+
+        dump($product_2_category_array);
     }
 
     public function getProductsByCategorySlugs(Request $request, $url)
@@ -142,6 +155,9 @@ class ProductController extends Controller
         ->limit(6)
         ->get()
         ->all();
+        $category_collection;
+
+        $this->getParentCategoryCollectionByProduct($product_array[0], $category_collection);
 
         return new ProductCollection($product_array);
     }

@@ -9,30 +9,32 @@
               <h4 class="register-box-msg">Daftar</h4>
               <form @submit.prevent="signinFormOnSubmit">
                 <div class="form-group mb-4">
-                  <input v-bind:class="`form-control${errors.email instanceof Array ? ' is-invalid' : ''}`" type="name" name="name" spellcheck="false" autocomplete="off" placeholder="Nama" v-model="input.name">
-                  <small v-for="(error, i) in errors.email" v-bind:key="i" class="form-text text-danger">{{error}}</small>
+                  <input v-bind:class="`form-control${errors.name instanceof Array ? ' is-invalid' : ''}`" type="name" name="name" spellcheck="false" autocomplete="off" placeholder="Nama" v-model="input.name">
+                  <small v-for="(error, i) in errors.name" v-bind:key="i" class="form-text text-danger">{{error}}</small>
                 </div>
                 <div class="form-group mb-4">
                   <input v-bind:class="`form-control${errors.email instanceof Array ? ' is-invalid' : ''}`" type="email" name="email" spellcheck="false" autocomplete="off" placeholder="Email" v-model="input.email">
                   <small v-for="(error, i) in errors.email" v-bind:key="i" class="form-text text-danger">{{error}}</small>
                 </div>
-                <div class="form-group d-flex mb-4">
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="maleCheckbox">
-                    <label class="custom-control-label" for="maleCheckbox">Laki-laki</label>
+                <div class="form-group mb-4">
+                  <div class="d-flex">
+                    <div class="custom-control custom-radio">
+                      <input type="radio" id="maleRadioInput" name="gender" class="custom-control-input" value="1" v-model="input.gender">
+                      <label class="custom-control-label" for="maleRadioInput">Laki-laki</label>
+                    </div>
+                    <div class="custom-control custom-radio ml-3">
+                      <input type="radio" id="femaleRadioInput" name="gender" class="custom-control-input" value="2" v-model="input.gender">
+                      <label class="custom-control-label" for="femaleRadioInput">Perempuan</label>
+                    </div>
                   </div>
-                  <div class="custom-control custom-checkbox ml-3">
-                    <input type="checkbox" class="custom-control-input" id="femaleCheckbox">
-                    <label class="custom-control-label" for="femaleCheckbox">Perempuan</label>
-                  </div>
+                  <small v-for="(error, i) in errors.gender" v-bind:key="i" class="form-text text-danger">{{error}}</small>
                 </div>
                 <div class="form-group mb-4">
                   <input v-bind:class="`form-control${errors.password instanceof Array ? ' is-invalid' : ''}`" type="password" name="password" placeholder="Password" v-model="input.password">
                   <small v-for="(error, i) in errors.password" v-bind:key="i" class="form-text text-danger">{{error}}</small>
                 </div>
                 <div class="form-group mb-4">
-                  <input v-bind:class="`form-control${errors.password instanceof Array ? ' is-invalid' : ''}`" type="password" name="password_confirmation" placeholder="Konfirmasi Password" v-model="input.password_confirmation">
-                  <small v-for="(error, i) in errors.password" v-bind:key="i" class="form-text text-danger">{{error}}</small>
+                  <input class="form-control" type="password" name="password_confirmation" placeholder="Konfirmasi Password" v-model="input.password_confirmation">
                 </div>
                 <div class="d-flex justify-content-end">
                   <button class="btn btn-primary w-100" v-bind:disabled="isRegistering">
@@ -53,6 +55,8 @@
 .malangpedia-text {
   font-size: 32px;
   font-weight: 200;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .register-page {
@@ -65,7 +69,7 @@
 
 .register-box-msg {
   color: #303030;
-  font-size: 20px;
+  font-size: 16 px;
   margin-bottom: 16px;
 }
 
@@ -98,8 +102,11 @@ export default {
     return {
       isRegistering: false,
       input: {
-        username: null,
-        password: null
+        name: 'Aziz Firmansyah Ramawandani',
+        email: 'aframawandani@gmail.com',
+        gender: 1,
+        password: 'test123',
+        password_confirmation: 'test123'
       },
       errors: {}
     };
@@ -113,12 +120,16 @@ export default {
         method: 'POST',
         url: '/api/auth/register',
         data: {
+          name: this.input.name,
           email: this.input.email,
-          password: this.input.password
+          gender: this.input.gender,
+          password: this.input.password,
+          password_confirmation: this.input.password_confirmation
         }
       })
       .then(response => {
-        document.location = this.referer instanceof String ? this.referer : document.location.origin;
+        console.log(response.data);
+//        document.location = this.referer instanceof String ? this.referer : document.location.origin;
       })
       .catch(error => {
         if (error.response instanceof Object && error.response.data instanceof Object) {

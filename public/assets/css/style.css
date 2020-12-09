@@ -453,6 +453,7 @@ ol {
 
 .header__right__auth a:last-child {
 	margin-right: 0;
+	white-space: nowrap;
 }
 
 .header__right__widget {
@@ -1054,16 +1055,12 @@ ol {
 }
 
 .categories__item {
-	height: 314px;
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
 	-webkit-box-align: center;
 	-ms-flex-align: center;
 	align-items: center;
-	padding-left: 30px;
-	margin-bottom: 10px;
-	margin-right: 10px;
 }
 
 .categories__item.categories__large__item {
@@ -1138,7 +1135,7 @@ ol {
 }
 
 .filter__controls li + li {
-	margin-left: 35px;
+	margin-left: 20px;
 }
 
 .filter__controls li.active:after {

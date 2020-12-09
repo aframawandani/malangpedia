@@ -3,10 +3,12 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\AuthController AS ApiAuthController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ShoppingCartProductController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\RegisterController;
 use App\Http\Resources\UserResource;
 
 use App\Http\Controllers\Api\Admin\ProductController AS AdminProductController;
@@ -26,22 +28,17 @@ use App\Http\Controllers\Api\Admin\CategoryController AS AdminCategoryController
 Route::middleware('auth')->get('/product', [ProductController::class, 'get']);
 
 Route
-::get('/auth/user', function (Request $request)
-{
-    $user = @$request->user();
-
-    if (is_null($user))
-    {
-        return response()->json([], 401);
-    }
-
-    return response()->json(new UserResource($user));
-})
+::get('/auth/user', [ApiAuthController::class, 'user'])
 ->name('api.auth.user.get');
 
 Route
 ::post('/auth/login', [AuthController::class, 'login'])
 ->name('api.auth.login.post')
+->middleware('guest');
+
+Route
+::post('/auth/register', [RegisterController::class, 'register'])
+->name('api.auth.register.post')
 ->middleware('guest');
 
 // Product

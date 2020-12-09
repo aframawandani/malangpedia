@@ -40,7 +40,7 @@
               <div class="header__right__auth">
                 <inertia-link v-if="!(user instanceof Object)" href="/auth/login">Login</inertia-link>
                 <inertia-link v-if="!(user instanceof Object)" href="/auth/register">Register</inertia-link>
-                <inertia-link v-if="user instanceof Object" href="javascript:void(0)">{{user.first_name}}</inertia-link>
+                <inertia-link v-if="user instanceof Object" href="/profile">{{user.name}}</inertia-link>
               </div>
             </div>
           </div>
@@ -85,10 +85,12 @@ export default {
 
     axios.get('/api/auth/user')
     .then(response => {
-      const data = response.data;
+      if (response.data instanceof Object) {
+        const data = response.data.data;
 
-      if (data instanceof Object) {
-        this.user = data;
+        if (data instanceof Object) {
+          this.user = data;
+        }
       }
     })
     .finally(() => {

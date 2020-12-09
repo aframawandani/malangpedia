@@ -32,6 +32,7 @@ use Inertia\Inertia;
 Route
 ::get('/auth/login', function (Request $request)
 {
+    return Inertia::render('Auth/Login');
 });
 
 // Register

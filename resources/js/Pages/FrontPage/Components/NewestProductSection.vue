@@ -2,14 +2,21 @@
   <section class="product spad">
     <div class="container">
       <div class="row">
-        <div class="col">
+        <div class="col-lg-4">
           <div class="section-title">
             <h4>Produk Baru</h4>
           </div>
         </div>
+        <div class="col-lg-8">
+          <ul class="filter__controls">
+            <li class="active mixitup-control-active" data-filter="*">All</li>
+            <li data-filter=".laptop">Laptop</li>
+            <li data-filter=".pcdesktop">PC Desktop</li>
+          </ul>
+        </div>
       </div>
       <div class="row property__gallery">
-        <div v-for="(product, i) in data" v-bind:key="i" class="col-lg-2 col-md-3 col-sm-4 col-xs-2">
+        <div v-for="(product, i) in data" v-bind:key="i" class="col-lg-2 col-md-3 col-sm-4 col-xs-2 mix laptop">
           <inertia-link class="product__item" v-bind:href="product.url">
             <div class="product__item__pic set-bg">
               <img v-lazy="product.image">
