@@ -5,15 +5,18 @@
     </div>
     <div class="categories__accordion">
       <div class="accordion" id="categoriesAccordion">
-        <div v-for="(category, i) in data" v-bind:key="`category${i}`" class="card">
+        <div v-for="(category, i) in data" :key="`category${i}`" class="card">
           <div class="card-heading active">
-            <a data-toggle="collapse" v-bind:data-target="`#collapse${category.category_id}`">{{category.name}}</a>
+            <a data-toggle="collapse" :data-target="`#collapse${category.category_id}`" :aria-expanded="pathname.search(category.url) === 0">{{category.name}}</a>
           </div>
-          <div class="collapse" v-bind:id="`collapse${category.category_id}`" data-parent="#categoriesAccordion">
+          <div :class="`collapse${pathname.search(category.url) === 0 ? ' show' : ''}`" :id="`collapse${category.category_id}`" data-parent="#categoriesAccordion">
             <div class="card-body">
               <ul>
-                <li v-for="child_category in category.child_categories" v-bind:key="child_category.category_id">
-                  <inertia-link v-bind:href="child_category.slug">{{child_category.name}}</inertia-link>
+                <li>
+                  <inertia-link :href="category.url">Semua</inertia-link>
+                </li>
+                <li v-for="child_category in category.child_categories" :key="child_category.category_id">
+                  <inertia-link :href="child_category.url">{{child_category.name}}</inertia-link>
                 </li>
               </ul>
             </div>
@@ -34,6 +37,7 @@ export default {
   },
   data() {
     return {
+      pathname: document.location.pathname,
       isLoading: true,
       data: []
     };

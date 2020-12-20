@@ -29,14 +29,14 @@
                     <div class="col-md-6">
                       <div v-bind:class="`form-group${errors.name instanceof Array ? ' has-error' : ''}`" style="overflow: hidden;">
                         <label for="namaInput">Nama</label>
-                        <input class="form-control" type="text" name="name" v-bind:disabled="isInserting" spellcheck="false" autocomplete="off" v-model="input.name">
+                        <input class="form-control" type="text" name="name" spellcheck="false" autocomplete="off" v-model="input.name">
                         <div v-for="(error, i) in (errors.name instanceof Array ? errors.name : [])" v-bind:key="i" class="help-block">{{error}}</div>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div v-bind:class="`form-group${errors.slug instanceof Array ? ' has-error' : ''}`" style="overflow: hidden;">
                         <label for="slugInput">Slug</label>
-                        <input class="form-control" type="text" name="slug" v-bind:disabled="isInserting" spellcheck="false" autocomplete="off" v-model="input.slug">
+                        <input class="form-control" type="text" name="slug" spellcheck="false" autocomplete="off" v-model="input.slug">
                         <div v-for="(error, i) in (errors.slug instanceof Array ? errors.slug : [])" v-bind:key="i" class="help-block">{{error}}</div>
                       </div>
                     </div>
@@ -45,20 +45,20 @@
                     <div class="col-md-6">
                       <div v-bind:class="`form-group${errors.description instanceof Array ? ' has-error' : ''}`" style="overflow: hidden;">
                         <label for="description">Deskripsi</label>
-                        <textarea class="form-control" name="description" v-bind:disabled="isInserting" rows="6" spellcheck="false" autocomplete="off" v-model="input.description"></textarea>
+                        <textarea class="form-control" name="description" rows="6" spellcheck="false" autocomplete="off" v-model="input.description"></textarea>
                         <div v-for="(error, i) in (errors.description instanceof Array ? errors.description : [])" v-bind:key="i" class="help-block">{{error}}</div>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div v-bind:class="`form-group${errors.parent_category_id instanceof Array ? ' has-error' : ''}`">
                         <label>Kategori Induk</label>
-                        <select id="parentCategoryIdSelect" name="parent_category_id" v-bind:disabled="isInserting" style="width: 100%;"></select>
+                        <select id="parentCategoryIdSelect" name="parent_category_id" style="width: 100%;"></select>
                         <div v-for="(error, i) in (errors.parent_category_id instanceof Array ? errors.parent_category_id : [])" v-bind:key="i" class="help-block">{{error}}</div>
                       </div>
                     </div>
                   </div>
                   <div class="d-flex justify-content-end">
-                    <button class="btn btn-primary" v-bind:disabled="isInserting">
+                    <button class="btn btn-primary">
                       <i v-if="isInserting" class="feather icon-loader"></i>
                       <span class="text">{{isInserting ? 'Menambah' : 'Tambah'}}</span>
                     </button>
@@ -93,7 +93,9 @@ export default {
       errors: {},
       input: {
         name: null,
-        description: null
+        slug: null,
+        description: null,
+        parent_category_id: null
       }
     };
   },
@@ -116,14 +118,17 @@ export default {
   methods: {
     insertFormOnSubmit(event) {
       this.isInserting = true;
-      const formData = new FormData(event.target);
+      const data = {
+        _method: 'PUT',
+        ...this.input
+      };
 
       formData.append('_method', 'put');
 
       axios({
-        method: 'post',
+        method: 'POST',
         url: '/api/admin/category',
-        data: formData
+        data
       })
       .then(response => {
         this.$inertia.visit('/admin/category');

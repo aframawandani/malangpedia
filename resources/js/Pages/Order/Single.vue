@@ -6,75 +6,84 @@
           <div class="col-lg-12">
             <div class="breadcrumb__links">
               <inertia-link href="/"><i class="fa fa-home"></i> Home</inertia-link>
-              <span>Pesanan</span>
+              <span>Keranjang Belanja</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <section class="order spad">
+    <section class="shop-cart spad">
       <div class="container">
-        <form class="order__form">
-          <div class="row">
-            <div class="col-lg-8">
-              <h5>Pesanan</h5>
-              <div class="row">
-                <div class="col-12">
-                  <div class="order__form__input">
-                    <p>Alamat <span>*</span></p>
-                    <input id="addressInput" name="address" type="text" spellcheck="false" autocomplete="off" v-model="input.address">
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-12">
-                  <div class="order__form__input">
-                    <p>Catatan</p>
-                    <textarea id="noteTextarea" name="note" spellcheck="false" autocomplete="off" rows="6" style="width: 100%;" v-model="input.note"></textarea>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4">
-              <div class="order__order">
-                <h5>Pesanan Anda</h5>
-                <div class="order__order__product">
-                  <ul>
-                    <li>
-                      <span class="top__text">Produk</span>
-                      <span class="top__text__right">Total</span>
-                    </li>
-                    <li v-for="(shoppingCartProduct, i) in $store.state.shoppingCartProducts" v-bind:key="shoppingCartProduct.product_id">{{(i + 1).toString().padStart(2, '0')}}. {{shoppingCartProduct.name}} x {{shoppingCartProduct.quantity}} <span>Rp {{(shoppingCartProduct.quantity * shoppingCartProduct.price).toLocaleString('id-ID')}}</span></li>
-                    <li><span>Rp {{$store.state.shoppingCartProducts.reduce((acc, cur, idx) => acc + cur.quantity * cur.price, 0).toLocaleString('id-ID')}}</span></li>
-                  </ul>
-                </div>
-                <div class="row">
-                  <div class="col-6">
-                    <button class="site-btn" type="button" @click="refresh">Refresh</button>
-                  </div>
-                  <div class="col-6">
-                    <button class="site-btn" type="submit">Pesan</button>
-                  </div>
-                </div>
-              </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="shop__cart__table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Produk</th>
+                    <th>Harga</th>
+                    <th>Kuantitas</th>
+                    <th>Total</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(shopping_cart_product, idx) in $store.state.shoppingCartProducts" v-bind:key="shopping_cart_product.product_id">
+                    <td class="cart__product__item">
+                      <img v-bind:src="shopping_cart_product.image" width="90" alt="">
+                      <div class="cart__product__item__title">
+                        <h6>{{shopping_cart_product.name}}</h6>
+                        <div class="rating">
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="cart__price">Rp {{shopping_cart_product.price.toLocaleString('id-ID')}}</td>
+                    <td class="cart__quantity">
+                      <div class="pro-qty">
+                        <button class="qtybtn" @click="() => {$store.commit('decreaseQuantityShoppingCartProduct', {idx})}">
+                          <i class="feather icon-minus"></i>
+                        </button>
+                        <input type="text" v-model="shopping_cart_product.quantity" @beforeinput="quantityInputOnBeforeInput" @change="event => {$store.commit('updateQuantityShoppingCartProduct', {idx, quantity: Number.parseInt(event.target.value)});}">
+                        <button class="qtybtn" @click="() => {$store.commit('increaseQuantityShoppingCartProduct', {idx})}">
+                          <i class="feather icon-plus"></i>
+                        </button>
+                      </div>
+                    </td>
+                    <td class="cart__total">Rp {{(shopping_cart_product.price * shopping_cart_product.quantity).toLocaleString('id-ID')}}</td>
+                    <td class="cart__close">
+                      <button class="btn btn-light btn-icon" @click="() => {$store.commit('removeShoppingCartProduct', {idx})}">
+                        <i class="feather icon-x"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-        </form>
+        </div>
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="cart__btn update__btn">
+              <button type="button" @click="refresh">Refresh</button>
+            </div>
+          </div>
+          <div class="col-lg-4 offset-lg-2">
+            <div class="cart__total__procced">
+              <h6>Total Keranjang Belanja</h6>
+              <ul>
+                <li>Total <span>Rp {{$store.state.shoppingCartProducts.reduce((acc, cur) => acc + cur.quantity * cur.price, 0).toLocaleString('id-ID')}}</span></li>
+              </ul>
+              <inertia-link href="/checkout" class="primary-btn">Lanjutkan ke Pembayaran</inertia-link>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
-    <div class="modal" id="testModal" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-body">
-            <p>Apakah Anda yakin akan memesan produk tersebut?</p>
-          </div>
-          <div class="modal-footer">
-            <button class="site-btn" type="button" @click="yesOrderConfirmationButtonOnClick">Ya</button>
-            <button class="site-btn" type="button">Tidak</button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -88,58 +97,25 @@ export default {
   layout: Layout,
   data() {
     return {
-      data: [],
-      input: {
-        address: null,
-        note: null
-      }
+      data: []
     };
   },
   methods: {
     refresh() {
       this.$store.commit('refreshShoppingCartProducts');
     },
-    yesOrderConfirmationButtonOnClick() {
-      const data = {
-        _method: 'PUT',
-        address: this.input.address,
-        note: this.input.note,
-        products: this.data.map(shoppingCartProduct => {
-          return {
-            product_id: shoppingCartProduct.product_id,
-            quantity: shoppingCartProduct.quantity
-          };
-        })
-      };
+    quantityInputOnBeforeInput(event, idx) {
+      const values = event.target.value.split('');
+      const selectionStart = event.target.selectionStart;
 
-      axios({
-        method: 'POST',
-        url: '/api/order',
-        data
-      })
-      .then(response => {
-        if (response.data instanceof Object) {
-          const data = response.data.data;
+      values.splice(selectionStart, event.target.selectionEnd - event.target.selectionStart, event.data);
 
-          if (data instanceof Object) {
-            this.$inertia.visit(`/order/${data.order_id}`);
-          }
-        }
-      });
-    }
-  },
-  mounted() {
-    $('#testModal').modal('show');
-    axios.get('/api/shopping-cart-product')
-    .then(response => {
-      if (response.data instanceof Object) {
-        const data = response.data.data;
+      let value = values.join('');
 
-        if (data instanceof Array) {
-          this.data = data;
-        }
+      if (!(value.match(/^[1-9][0-9]*$/) instanceof Array)) {
+        event.preventDefault();
       }
-    });
+    }
   }
 }
 </script>

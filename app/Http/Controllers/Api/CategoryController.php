@@ -126,6 +126,11 @@ class CategoryController extends Controller
         return $category_collection;
     }
 
+    public function getDetail(Request $request, $category_id)
+    {
+        $category = Category::select('category_id', 'name', DB::raw(''))->where('category_id', $category_id)->get()->first();
+    }
+
     public function getSingle()
     {
         return response()->json();

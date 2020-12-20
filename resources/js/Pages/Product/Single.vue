@@ -6,8 +6,8 @@
           <div class="col-lg-12">
             <div v-if="isLoading" class="loading-value" style="height: 16px;"></div>
             <div v-if="!isLoading" class="breadcrumb__links">
-              <a href="./index.html"><i class="fa fa-home"></i> Home</a>
-              <a v-if="isLoading" href="#">Women’s </a>
+              <inertia-link href="/"><i class="fa fa-home"></i> Home</inertia-link>
+              <inertia-link v-for="(category, i) in data.categories" :key="i" :href="category.url">{{category.name}}</inertia-link>
               <span>{{isLoading ? '?': data.name}}</span>
             </div>
           </div>

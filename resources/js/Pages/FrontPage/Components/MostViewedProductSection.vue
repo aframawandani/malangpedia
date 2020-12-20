@@ -12,7 +12,7 @@
         <div v-for="(product, i) in data" v-bind:key="i" class="col-lg-2 col-md-3 col-sm-4 col-xs-2">
           <inertia-link class="product__item" v-bind:href="product.url">
             <div class="product__item__pic set-bg">
-              <img v-lazy="product.image">
+              <img :src="typeof product.image === 'string' ? `/assets/images/products/${product.image}.webp` : '/assets/images/no-product-image.svg'">
               <div v-if="typeof product.new === 'boolean' && product.new" class="label new">BARU</div>
             </div>
             <div class="product__item__text">
@@ -48,7 +48,8 @@ export default {
       if (data instanceof Object) {
         this.data = data;
       }
-    });
+    })
+    .catch(error => {});
   },
   components: {
     VueLazyload

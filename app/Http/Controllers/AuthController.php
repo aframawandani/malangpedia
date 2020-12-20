@@ -38,6 +38,6 @@ class AuthController extends Controller
     {
         $referer = request()->headers->get('referer');
 
-        return Inertia::render('Auth/Login', ['referer' => 'asdasdasd']);
+        return Inertia::render('Auth/Login', ['referer' => $referer]);
     }
 }

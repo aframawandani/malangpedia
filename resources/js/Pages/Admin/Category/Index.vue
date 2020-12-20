@@ -80,8 +80,8 @@ export default {
           dom: "<'row'<'col'B><'col'f><'col float-right'l>><'row mr-0 overflow-auto'<'col-xs-12't>><'row'<'col'i><'col float-right'p>>",
           buttons: [
             {
-              className: 'btn btn-primary btn-icon btn-rounded',
-              text: '<i class="feather icon-plus"></i>',
+              className: 'btn btn-primary',
+              text: 'Tambah Kategori',
               action: () => {
                 this.$inertia.visit('/admin/category/insert');
               }
@@ -141,12 +141,20 @@ export default {
           },
           language: {
             search: '',
-            searchPlaceholder: 'Cari'
+            searchPlaceholder: 'Cari',
+            lengthMenu: 'Tampilkan _MENU_ baris',
+            info: 'Menampilkan _START_ - _END_ dari total _TOTAL_',
+            paginate: {
+                first: '<i class="feather icon-chevrons-left"></i>',
+                last: '<i class="feather icon-chevrons-right"></i>',
+                next: '<i class="feather icon-chevron-right"></i>',
+                previous: '<i class="feather icon-chevron-left"></i>'
+            },
           }
         });
         this.dataTableApi = this.$dataTable.api();
 
-        $('.dataTables_filter').find('.input-sm').removeClass('input-sm').css({width: '320px'});
+        $('.dataTables_filter').find('.input-sm').removeClass('input-sm').attr({spellcheck: false}).css({width: '320px'});
         $('[name=dataTable_length]').select2({
           minimumResultsForSearch: -1
         });

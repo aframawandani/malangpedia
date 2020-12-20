@@ -26,14 +26,33 @@ class ProductController extends Controller
         return new ProductCollection($product_array);
     }
 
-    public function getDetail(Request $request, $slug)
+    public function getDetail(Request $request, $product_slug)
     {
         $product =
         Product
-        ::select('product_id', 'name', 'description', 'price', 'quantity', 'image', DB::raw("CONCAT('/product/', slug) as url"))
-        ->where('slug', $slug)
+        ::select('product_id', 'name', 'description', 'price', 'quantity', DB::raw("CONCAT('/assets/images/products/', image, '.jpg') AS image"), DB::raw("CONCAT('/product/', slug) as url"))
+        ->where('slug', $product_slug)
         ->get()
         ->first();
+        $product_2_category_array =
+        Product_2_category
+        ::select('categories.name', 'categories.slug')
+        ->where('product_2_categories.product_id', $product->product_id)
+        ->leftJoin('categories', 'categories.category_id', '=', 'product_2_categories.category_id')
+        ->orderBy('number_of_descendant', 'DESC')
+        ->get()
+        ->all();
+        $url = '/category';
+
+        foreach ($product_2_category_array AS $product_2_category)
+        {
+            $url .= '/'.$product_2_category->slug;
+            $product_2_category->url = $url;
+
+            unset($product_2_category->slug);
+        }
+
+        $product->setRelation('categories', $product_2_category_array);
 
         return new ProductResource($product);
     }
@@ -77,18 +96,6 @@ class ProductController extends Controller
         }
     }
 
-    private function getParentCategoryCollectionByProduct(Product $product, &$parent_category_collection)
-    {
-        $product_2_category_array =
-        Product_2_category
-        ::where('product_id', $product->product_id)
-        ->leftJoin('categories', 'categories.category_id', '=', 'product_2_categories.category_id')
-        ->get()
-        ->all();
-
-        dump($product_2_category_array);
-    }
-
     public function getProductsByCategorySlugs(Request $request, $url)
     {
         $category_slug_array = explode('/', $url);
@@ -125,13 +132,15 @@ class ProductController extends Controller
             abort(404);
         }
 
-        $product_array =
+        $product_paginator =
         Product
         ::select('products.product_id', 'products.name', DB::raw("CONCAT('/product/', products.slug) AS url"), 'products.image', 'products.price')
         ->leftJoin('product_2_categories', 'product_2_categories.product_id', '=', 'products.product_id')
         ->where('product_2_categories.category_id', $category->category_id)
-        ->get()
-        ->all();
+        ->paginate(1)
+        ->withPath("/category/$url");
+
+        $product_array = $product_paginator->items();
 
         foreach ($product_array AS $product)
         {
@@ -140,6 +149,7 @@ class ProductController extends Controller
 
         return response()->json([
             'data' => $product_array,
+            'links' => $product_paginator->links(),
             'meta' => [
                 'category' => array_pop($category_data_array),
                 'parent_categories' => $category_data_array
@@ -152,12 +162,9 @@ class ProductController extends Controller
         $product_array =
         Product
         ::select('product_id', 'name', 'price', 'image', DB::raw("CONCAT('/product/', slug) as url"))
-        ->limit(6)
+        ->limit(12)
         ->get()
         ->all();
-        $category_collection;
-
-        $this->getParentCategoryCollectionByProduct($product_array[0], $category_collection);
 
         return new ProductCollection($product_array);
     }

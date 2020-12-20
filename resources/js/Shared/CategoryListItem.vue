@@ -2,7 +2,7 @@
   <div class="card">
     <div class="card-heading active">
       <button v-if="category.child_categories.length > 0" data-toggle="collapse" v-bind:class="getClass(category)" v-bind:data-target="`#accordion${category.category_id}`" v-bind:aria-expanded="getAriaExpanded(category)"></button>
-      <inertia-link v-bind:href="`/category${category.url}`">{{category.name}}</inertia-link>
+      <inertia-link>{{category.name}}</inertia-link>
     </div>
     <div v-if="category.child_categories.length > 0" v-bind:id="`accordion${category.category_id}`" v-bind:class="'collapse'+(isActive(category) ? ' show' : '')" v-bind:data-parent="typeof category.parent_category_id === 'number' ? `#accordion${category.parent_category_id}` : '#accordion0'">
       <div class="card-body">

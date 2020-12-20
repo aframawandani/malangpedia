@@ -21,7 +21,8 @@ class ProductResource extends JsonResource
             'image' => $this->image,
             'slug' => $this->slug,
             'quantity' => $this->quantity,
-            'price' => $this->price
+            'price' => floatval($this->price),
+            'category_id' => $this->category_id
         ];
     }
 }

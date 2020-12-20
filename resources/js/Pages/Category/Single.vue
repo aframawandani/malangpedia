@@ -6,7 +6,7 @@
           <div v-if="isLoading && !isError" class="loading-value" style="height: 16px; width: 240px;"></div>
           <div v-if="!isLoading && !isError" class="breadcrumb__links">
             <inertia-link href="/"><i class="fa fa-home"></i> Home</inertia-link>
-            <inertia-link v-for="(parent_category, i) in meta.parent_categories" v-bind:key="i" v-bind:href="parent_category.url">{{parent_category.name}}</inertia-link>
+            <inertia-link v-for="(parent_category, i) in meta.parent_categories" :key="i" :href="parent_category.url">{{parent_category.name}}</inertia-link>
             <span class="text">{{meta.category.name}}</span>
           </div>
         </div>
@@ -21,8 +21,8 @@
             </div>
           </div>
           <div class="col-lg-9 col-md-9">
-            <div v-if="isLoading" class="row">
-              <div v-for="i in 12" v-bind:key="i" class="col-lg-3 col-md-4">
+            <div v-if="isGettingProducts" class="row">
+              <div v-for="i in 12" :key="i" class="col-lg-3 col-md-4">
                 <div class="product__item">
                   <div class="product__item__pic set-bg">
                     <div class="loading-value" style="padding-top: 100%;"></div>
@@ -36,11 +36,11 @@
                 </div>
               </div>
             </div>
-            <div v-if="!isLoading && !isError" class="row">
-              <div v-for="(product, i) in data" v-bind:key="i" class="col-lg-3 col-md-4">
-                <inertia-link class="product__item" v-bind:href="product.url">
+            <div v-if="!isGettingProducts" class="row">
+              <div v-for="(product, i) in data" :key="i" class="col-lg-3 col-md-4">
+                <inertia-link class="product__item" :href="product.url">
                   <div class="product__item__pic set-bg">
-                    <img v-bind:src="product.image" />
+                    <img :src="typeof product.image === 'string' ? `/assets/images/products/${product.image}.webp` : '/assets/images/no-product-image.svg'">
                     <div class="label new">New</div>
                   </div>
                   <div class="product__item__text">
@@ -49,12 +49,16 @@
                   </div>
                 </inertia-link>
               </div>
-              <div class="col-lg-12 text-center">
+              <div v-if="data.length === 0" class="col-lg-12"></div>
+              <div v-if="data.length > 0" class="col-lg-12 d-flex justify-content-center">
                 <div class="pagination__option">
-                  <a href="#">1</a>
-                  <a href="#">2</a>
-                  <a href="#">3</a>
-                  <a href="#"><i class="fa fa-angle-right"></i></a>
+                  <a v-if="typeof links[0].url === 'string'" :href="links[0].url" @click.prevent="getProducts(currentPage - 1)">
+                    <i class="feather icon-chevron-left"></i>
+                  </a>
+                  <a v-for="(link, i) in links.slice().splice(1, links.length - 2)" :key="i" :class="link.active ? 'active' : null" :href="link.url" @click.prevent="((page) => () => {getProducts(parseInt(page));})(parseInt(link.label))">{{link.label}}</a>
+                  <a v-if="typeof links[links.length - 1].url === 'string'" :href="links[links.length - 1].url" @click.prevent="getProducts(currentPage + 1)">
+                    <i class="feather icon-chevron-right"></i>
+                  </a>
                 </div>
               </div>
             </div>
@@ -79,35 +83,52 @@ export default {
   components: {
     SidebarCategories
   },
+  props: {
+    page: Number
+  },
   layout: Layout,
   data() {
     return {
       isLoading: true,
+      isGettingProducts: true,
       isError: false,
+      currentPage: this.page,
       data: [],
+      links: [],
       meta: {}
     }
   },
+  methods: {
+    getProducts(page) {
+      this.isGettingProducts = true;
+      this.currentPage = page;
+
+      axios
+      .get(`/api/product${document.location.pathname}${typeof page === 'number' && page > 0 ? `?page=${page}`: ''}`)
+      .then(response => {
+        const {data, links, meta} = response.data;
+
+        if (data instanceof Array) {
+          this.data = data;
+        }
+
+        if (links instanceof Object) {
+          this.links = links;
+        }
+
+        if (meta instanceof Object) {
+          this.meta = meta;
+        }
+      })
+      .catch(() => {
+        this.isError = true;
+      })
+      .finally(() => {
+        this.isGettingProducts = false;
+      });
+    }    
+  },
   mounted() {
-    axios
-    .get('/api/product'+document.location.pathname)
-    .then(response => {
-      const data = response.data.data;
-      const meta = response.data.meta;
-
-      if (data instanceof Array) {
-        this.data = data;
-      }
-
-      if (meta instanceof Object) {
-        this.meta = meta;
-      }
-    })
-    .catch(() => {
-      this.isError = true;
-    })
-    .finally(() => {
-      this.isLoading = false;
-    });
+    this.getProducts(this.page);
   }
 }</script>

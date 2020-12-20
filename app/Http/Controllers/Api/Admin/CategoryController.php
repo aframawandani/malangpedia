@@ -123,12 +123,13 @@ class CategoryController extends Controller
 
     public function destroy(DeleteRequest $request)
     {
-        $category_data = $request->validated;
+        $category_data = $request->validated();
+
         Category
         ::leftJoin(DB::raw('categories AS c'), 'c.parent_category_id', '=', 'categories.category_id')
         ->whereIn('c.category_id', $category_data['category_id'])
         ->update([
-            'number_of_descendant' => DB::raw('number_of_descendant - c.number_of_descendant')
+            'categories.number_of_descendant' => DB::raw('categories.number_of_descendant - c.number_of_descendant')
         ]);
 
         $deleted = Category::whereIn('category_id', $category_data['category_id'])->delete();

@@ -12,6 +12,11 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
+        if (is_null($user))
+        {
+            return response()->json(null, 401);
+        }
+
         return new UserResource($user);
     }
 }

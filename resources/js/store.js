@@ -8,9 +8,13 @@ Vue.use(Vuex);
 let shoppingCartProductCancelTokenSource;
 const store = new Vuex.Store({
   state: {
-    shoppingCartProducts: []
+    shoppingCartProducts: [],
+    locationPathname: document.location.pathname
   },
   mutations: {
+    refreshLocationPathname(state) {
+      state.locationPathname = document.location.pathname;
+    },
     refreshShoppingCartProducts(state) {
       axios.get('/api/shopping-cart-product')
       .then(response => {

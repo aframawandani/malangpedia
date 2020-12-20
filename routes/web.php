@@ -14,6 +14,7 @@ use App\Http\Controllers\Web\OrderController;
 use App\Http\Controllers\Web\Admin\DashboardController AS AdminDashboardController;
 use App\Http\Controllers\Web\Admin\CategoryController AS AdminCategoryController;
 use App\Http\Controllers\Web\Admin\ProductController AS AdminProductController;
+use App\Http\Controllers\Web\Admin\OrderController AS AdminOrderController;
 use Inertia\Inertia;
 
 /*
@@ -33,7 +34,9 @@ Route
 ::get('/auth/login', function (Request $request)
 {
     return Inertia::render('Auth/Login');
-});
+})
+->name('auth.login')
+->middleware('guest');
 
 // Register
 
@@ -41,7 +44,9 @@ Route
 ::get('/auth/register', function ()
 {
     return Inertia::render('Auth/Register');
-});
+})
+->name('auth.register')
+->middleware('guest');
 
 // Admin Login
 
@@ -120,17 +125,17 @@ Route
 Route
 ::get('/admin/category', [AdminCategoryController::class, 'index'])
 ->name('admin.category.index')
-->middleware('auth');
+->middleware(['auth', 'permissions']);
 
 Route
 ::get('/admin/category/insert', [AdminCategoryController::class, 'insert'])
 ->name('admin.category.insert')
-->middleware('auth');
+->middleware(['auth', 'permissions']);
 
 Route
 ::get('/admin/category/update/{category_id}', [AdminCategoryController::class, 'update'])
 ->name('admin.category.update')
-->middleware('auth');
+->middleware(['auth', 'permissions']);
 
 // Product
 
@@ -147,4 +152,12 @@ Route
 Route
 ::get('/admin/product/update/{product_id}', [AdminProductController::class, 'update'])
 ->name('admin.product.update')
+->middleware('auth');
+
+
+// Order
+
+Route
+::get('/admin/order', [AdminOrderController::class, 'index'])
+->name('admin.order.index')
 ->middleware('auth');

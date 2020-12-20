@@ -20,8 +20,7 @@
                 <li class="active"><inertia-link href="/">Home</inertia-link></li>
                 <li><inertia-link href="/category/komputer-laptop/komputer-desktop">Komputer Desktop</inertia-link></li>
                 <li><inertia-link href="/category/komputer-laptop/laptop">Laptop</inertia-link></li>
-                <li><inertia-link href="/category/komputer-laptop/komponen">Komponen</inertia-link></li>
-                <li><inertia-link href="/category/komputer-laptop/sewa-laptop">Sewa Laptop</inertia-link></li>
+                <li><inertia-link href="/category/karya-nusantara">Karya Nusantara</inertia-link></li>
               </ul>
             </nav>
           </div>
@@ -78,8 +77,6 @@ export default {
     };
   },
   mounted() {
-    this.$store.commit('refreshShoppingCartProducts');
-
     $(".loader").fadeOut();
     $("#preloder").delay(200).fadeOut("slow");
 
@@ -90,12 +87,18 @@ export default {
 
         if (data instanceof Object) {
           this.user = data;
+
+          this.$store.commit('refreshShoppingCartProducts');
         }
       }
     })
+    .catch(error => {})
     .finally(() => {
       this.isGettingUser = false;
     });
+  },
+  updated() {
+    this.$store.commit('refreshLocationPathname');
   }
 }
 </script>

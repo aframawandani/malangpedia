@@ -31,7 +31,7 @@ class PatchRequest extends FormRequest
         return [
             'category_id' => 'required|exists:categories',
             'name' => 'required',
-            'slug' => 'nullable|unique:categories,slug,'.$this->get('category_id').',category_id',
+            'slug' => "nullable|unique:categories,slug,$category_id,category_id",
             'description' => 'nullable',
             'parent_category_id' => 'nullable|exists:categories,category_id',
             'image' => 'nullable|image',

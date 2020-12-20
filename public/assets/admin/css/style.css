@@ -304,6 +304,7 @@ a.btn.btn-primary {
 }
 
 .content-header > .breadcrumb > li + li:before {
+  color: #a0a0a0;
   content: '\e844';
   display: inline-block;
   font-family: 'feather' !important;
@@ -356,11 +357,22 @@ a.btn.btn-primary {
     overflow: visible;
 }
 
+
+div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+}
+
 .pagination > li > a {
   font-size: 14px;
   line-height: 18px;
 }
 
+.pagination > li > a > .feather {
+    display: block;
+    line-height: 18px;
+}
+    
 .pagination > li > a > .material-icons {
   line-height: 18px;
   vertical-align: top;
@@ -412,7 +424,9 @@ label {
   margin-bottom: 0;
 }
 
-.dataTable {
+table.dataTable {
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
   width: auto !important;
 }
 
@@ -453,6 +467,7 @@ tr:hover > .mailbox-tools {
 }
 
 textarea.form-control {
+  height: auto;
   min-height: 34px;
   width: 100% !important;
 }

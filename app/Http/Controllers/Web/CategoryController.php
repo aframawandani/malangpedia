@@ -13,8 +13,10 @@ class CategoryController extends Controller
         return Inertia::render('Category/Index');
     }
 
-    public function single()
+    public function single(Request $request)
     {
-        return Inertia::render('Category/Single');
+        $page = is_numeric(@$request->page) ? intval($request->page) : null;
+
+        return Inertia::render('Category/Single')->with(['page' => $page]);
     }
 }

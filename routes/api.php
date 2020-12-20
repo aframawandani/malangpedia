@@ -11,8 +11,9 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Resources\UserResource;
 
-use App\Http\Controllers\Api\Admin\ProductController AS AdminProductController;
 use App\Http\Controllers\Api\Admin\CategoryController AS AdminCategoryController;
+use App\Http\Controllers\Api\Admin\ProductController AS AdminProductController;
+use App\Http\Controllers\Api\Admin\OrderController AS AdminOrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,8 +50,13 @@ Route
 ->middleware('auth');
 
 Route
-::get('/product/{product_id}', [ProductController::class, 'getDetail'])
+::get('/product/{product_slug}', [ProductController::class, 'getDetail'])
 ->name('api.product.get_detail');
+
+Route
+::get('/product', [ProductController::class, 'get'])
+->name('api.product.get')
+->middleware('auth');
 
 Route
 ::get('/newest-products', [ProductController::class, 'getNewestProducts'])
@@ -83,6 +89,11 @@ Route
 Route
 ::patch('/category', [CategoryController::class, 'patch'])
 ->name('api.category.patch')
+->middleware('auth');
+
+Route
+::get('/product', [ProductController::class, 'get'])
+->name('api.product.get')
 ->middleware('auth');
 
 // Shopping Cart Product
@@ -196,4 +207,11 @@ Route
 Route
 ::delete('/admin/category', [AdminCategoryController::class, 'destroy'])
 ->name('admin.api.category.destroy')
+->middleware('auth');
+
+// Admin Order
+
+Route
+::get('/admin/order', [AdminOrderController::class, 'get'])
+->name('admin.api.order.get')
 ->middleware('auth');
