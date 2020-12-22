@@ -2096,24 +2096,37 @@ ol {
   Shop Cart
 -----------------------*/
 
-.shop-cart {
+.shop-cart,
+.orde {
 	padding-top: 70px;
 	padding-bottom: 90px;
 }
 
-.shop__cart__table {
+.shop__cart__table,
+.order__table {
 	margin-bottom: 30px;
 }
 
-.shop__cart__table table {
+.shop__cart__table table,
+.order__table table {
 	width: 100%;
 }
 
-.shop__cart__table thead {
+.shop__cart__table thead,
+.order__table thead {
 	border-bottom: 1px solid #f2f2f2;
 }
 
-.shop__cart__table thead th {
+.order__table tbody tr {
+	cursor: pointer;
+}
+
+.order__table tbody tr:hover {
+	background-color: #f2f2f2;
+}
+
+.shop__cart__table thead th,
+.order__table thead th {
 	font-size: 18px;
 	color: #111111;
 	font-weight: 600;
@@ -2121,56 +2134,75 @@ ol {
 	padding-bottom: 20px;
 }
 
-.shop__cart__table tbody tr {
+.shop__cart__table tbody tr,
+.order__table tbody tr {
 	border-bottom: 1px solid #f2f2f2;
 }
 
-.shop__cart__table tbody tr td {
+.shop__cart__table tbody tr td,
+.order__table tbody tr td {
 	padding: 30px 0;
 }
 
-.shop__cart__table tbody tr .cart__product__item {
+.shop__cart__table tbody tr .cart__product__item,
+.order__table tbody tr .order__item {
 	overflow: hidden;
 	width: 585px;
 }
 
-.shop__cart__table tbody tr .cart__product__item img {
+.shop__cart__table tbody tr .cart__product__item img,
+.order__table tbody tr .order__item img {
 	float: left;
 	margin-right: 25px;
 }
 
-.shop__cart__table tbody tr .cart__product__item .cart__product__item__title {
+.shop__cart__table tbody tr .cart__product__item .cart__product__item__title,
+.order__table tbody tr .order__item .order__item__title {
 	overflow: hidden;
 	padding-top: 23px;
 }
 
-.shop__cart__table tbody tr .cart__product__item .cart__product__item__title h6 {
+.shop__cart__table tbody tr .cart__product__item .cart__product__item__title h6,
+.order__table tbody tr .order__item .order__item__title h6 {
 	color: #111111;
 	font-weight: 600;
 }
 
-.shop__cart__table tbody tr .cart__product__item .cart__product__item__title .rating i {
+.order__table tbody tr .order__item .order__item__title .rating i {
 	font-size: 10px;
 	color: #e3c01c;
 	margin-right: -4px;
 }
 
-.shop__cart__table tbody tr .cart__price {
+.shop__cart__table tbody tr .cart__price,
+.order__table tbody tr .order_total {
 	font-size: 16px;
 	color: #ca1515;
 	font-weight: 600;
 	width: 190px;
 }
 
-.shop__cart__table tbody tr .cart__quantity {
+.order__table tbody tr .cart__quantity {
 	width: 190px;
 }
 
-.shop__cart__table tbody tr .cart__quantity .pro-qty {
+.order__table tbody tr .cart__quantity .pro-qty {
 	border: none;
 	padding: 0;
 	width: 110px;
 	border-radius: 0;
+}
+
+.order__table tbody tr .order__time {
+	width: 240px;
+}
+
+.order__table tbody tr .order__products {
+	width: 240px;
+}
+
+.order__table tbody tr .order__total {
+	width: 320px;
 }
 
 .shop__cart__table tbody tr .cart__quantity .pro-qty input {
@@ -2308,6 +2340,14 @@ ol {
 	text-align: center;
 	padding: 15px 0;
 }
+
+/*---------------------
+  Order
+-----------------------*/
+.order__table {
+
+}
+
 
 /*---------------------
   Checkout
@@ -3753,4 +3793,9 @@ ol {
 .no-product-image {
 	padding-top: 100%;
 	width: 100%;
+}
+
+#description-tab-pane table {
+	border-collapse: separate;
+	border-spacing: 0 10px;
 }

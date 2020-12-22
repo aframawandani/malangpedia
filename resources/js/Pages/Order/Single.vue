@@ -6,7 +6,8 @@
           <div class="col-lg-12">
             <div class="breadcrumb__links">
               <inertia-link href="/"><i class="fa fa-home"></i> Home</inertia-link>
-              <span>Keranjang Belanja</span>
+              <inertia-link href="/">Pesanan</inertia-link>
+              <span>{{orderId}}</span>
             </div>
           </div>
         </div>
@@ -28,11 +29,11 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(shopping_cart_product, idx) in $store.state.shoppingCartProducts" v-bind:key="shopping_cart_product.product_id">
+                  <tr v-for="(order_product) in data.products" v-bind:key="order_product.product_id">
                     <td class="cart__product__item">
-                      <img v-bind:src="shopping_cart_product.image" width="90" alt="">
+                      <img v-bind:src="order_product.image" width="90" alt="">
                       <div class="cart__product__item__title">
-                        <h6>{{shopping_cart_product.name}}</h6>
+                        <h6>{{order_product.name}}</h6>
                         <div class="rating">
                           <i class="fa fa-star"></i>
                           <i class="fa fa-star"></i>
@@ -42,24 +43,9 @@
                         </div>
                       </div>
                     </td>
-                    <td class="cart__price">Rp {{shopping_cart_product.price.toLocaleString('id-ID')}}</td>
-                    <td class="cart__quantity">
-                      <div class="pro-qty">
-                        <button class="qtybtn" @click="() => {$store.commit('decreaseQuantityShoppingCartProduct', {idx})}">
-                          <i class="feather icon-minus"></i>
-                        </button>
-                        <input type="text" v-model="shopping_cart_product.quantity" @beforeinput="quantityInputOnBeforeInput" @change="event => {$store.commit('updateQuantityShoppingCartProduct', {idx, quantity: Number.parseInt(event.target.value)});}">
-                        <button class="qtybtn" @click="() => {$store.commit('increaseQuantityShoppingCartProduct', {idx})}">
-                          <i class="feather icon-plus"></i>
-                        </button>
-                      </div>
-                    </td>
-                    <td class="cart__total">Rp {{(shopping_cart_product.price * shopping_cart_product.quantity).toLocaleString('id-ID')}}</td>
-                    <td class="cart__close">
-                      <button class="btn btn-light btn-icon" @click="() => {$store.commit('removeShoppingCartProduct', {idx})}">
-                        <i class="feather icon-x"></i>
-                      </button>
-                    </td>
+                    <td class="cart__price">Rp {{order_product.price.toLocaleString('id-ID')}}</td>
+                    <td class="cart__quantity">{{order_product.quantity}}</td>
+                    <td class="cart__total">Rp {{(order_product.price * order_product.quantity).toLocaleString('id-ID')}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -67,16 +53,11 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-lg-6 col-md-6 col-sm-6">
-            <div class="cart__btn update__btn">
-              <button type="button" @click="refresh">Refresh</button>
-            </div>
-          </div>
-          <div class="col-lg-4 offset-lg-2">
+          <div class="col-lg-4 offset-lg-8">
             <div class="cart__total__procced">
-              <h6>Total Keranjang Belanja</h6>
+              <h6>Total Pesanan</h6>
               <ul>
-                <li>Total <span>Rp {{$store.state.shoppingCartProducts.reduce((acc, cur) => acc + cur.quantity * cur.price, 0).toLocaleString('id-ID')}}</span></li>
+                <li>Total <span>Rp {{data.reduce((acc, cur) => acc + cur.quantity * cur.price, 0).toLocaleString('id-ID')}}</span></li>
               </ul>
               <inertia-link href="/checkout" class="primary-btn">Lanjutkan ke Pembayaran</inertia-link>
             </div>
@@ -94,28 +75,17 @@ import store from '@/store';
 
 export default {
   store,
+  props: {
+    orderId: Number
+  },
   layout: Layout,
   data() {
     return {
       data: []
     };
   },
-  methods: {
-    refresh() {
-      this.$store.commit('refreshShoppingCartProducts');
-    },
-    quantityInputOnBeforeInput(event, idx) {
-      const values = event.target.value.split('');
-      const selectionStart = event.target.selectionStart;
-
-      values.splice(selectionStart, event.target.selectionEnd - event.target.selectionStart, event.data);
-
-      let value = values.join('');
-
-      if (!(value.match(/^[1-9][0-9]*$/) instanceof Array)) {
-        event.preventDefault();
-      }
-    }
+  mounted() {
+    console.log(this.orderId);
   }
 }
 </script>

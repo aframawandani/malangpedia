@@ -20,7 +20,7 @@ class Order2ProductResource extends JsonResource
             'product_id' => $this->product_id,
             'product_name' => $this->product_name,
             'product_image' => $this->product_image,
-            'product_price' => 0,
+            'product_price' => is_numeric($this->product_price),
             'quantity' => $this->quantity
         ];
     }

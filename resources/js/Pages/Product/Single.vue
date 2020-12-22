@@ -42,13 +42,16 @@
               </div>
               <div v-if="isLoading" class="loading-value" style="height: 62px; margin-bottom: 25px;"></div>
               <div v-if="!isLoading" class="product__details__button">
-                <div class="quantity">
-                  <span>Jumlah:</span>
-                  <div class="pro-qty">
-                    <input id="quantityInput" type="text" value="1">
+                <div class="d-flex">
+                  <div class="quantity">
+                    <span>Jumlah:</span>
+                    <div class="pro-qty">
+                      <input id="quantityInput" type="text" value="1">
+                    </div>
                   </div>
+                  <a href="javascript:void(0)" class="cart-btn" @click="shoppingCartProductInsertButtonOnClick">Tambah ke Keranjang</a>
                 </div>
-                <a href="javascript:void(0)" class="cart-btn" @click="shoppingCartProductInsertButtonOnClick">Tambah ke Keranjang</a>
+                <div class="text-danger text-small">Test</div>
               </div>
               <div class="product__details__widget">
                 <ul>
@@ -84,6 +87,18 @@
         </div>
       </div>
     </section>
+    <div class="modal" id="errorModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p v-for="(error, i) in errors" :key="i">{{error.reduce((acc, cur, idx) => acc + (idx > 0 ? ', ' : '') + cur, '')}}</p>
+          </div>
+          <div class="modal-footer">
+            <button class="site-btn" type="button" data-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -92,6 +107,8 @@ import Vue from 'vue';
 import axios from 'axios';
 import Layout from '@/Shared/Layout';
 import store from '@/store';
+
+let $errorModal;
 
 function product_thumbs (num) {
   var thumbs = document.querySelectorAll('.product__thumb a');
@@ -109,10 +126,18 @@ export default {
   data() {
     return {
       isLoading: true,
-      data: {}
+      data: {},
+      errors: {}
+    }
+  },
+  methods: {
+    errorModalOKButtonOnClick() {
+      $errorModal.modal('hide');
     }
   },
   mounted() {
+    $errorModal = $('#errorModal');
+
     $('.product__thumb .pt').on('click', function(){
       var imgurl = $(this).data('imgbigurl');
       var bigImg = $('.product__big__img').attr('src');
@@ -155,7 +180,24 @@ export default {
     shoppingCartProductInsertButtonOnClick() {
       this.$store.commit('insertShoppingCartProduct', {
         product_id: this.data.product_id,
-        quantity: Number.parseInt($('#quantityInput').val())
+        quantity: Number.parseInt($('#quantityInput').val()),
+        callback: promise => {
+          promise.then(responseOrError => {
+            if (responseOrError instanceof Error) {
+              const error = responseOrError;
+
+              if (error.response.status === 422) {
+                const {errors} = error.response.data;
+
+                if (errors instanceof Object) {
+                  this.errors = errors;
+
+                  $errorModal.modal('show');
+                }
+              }
+            }
+          });
+        }
       });
     }
   }

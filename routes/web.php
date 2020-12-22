@@ -7,7 +7,7 @@ use App\Http\Controllers\Web\FrontPageController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\CategoryController;
 use App\Http\Controllers\Web\ProductController;
-use App\Http\Controllers\Web\ShopppingCartController;
+use App\Http\Controllers\Web\ShoppingCartController;
 use App\Http\Controllers\Web\CheckoutController;
 use App\Http\Controllers\Web\OrderController;
 
@@ -84,7 +84,7 @@ Route
 // Shopping Cart
 
 Route
-::get('/shopping-cart', [ShopppingCartController::class, 'index'])
+::get('/shopping-cart', [ShoppingCartController::class, 'index'])
 ->name('shoppping_cart.index')
 ->middleware('auth');
 
@@ -98,8 +98,13 @@ Route
 // Order
 
 Route
-::get('/order/{order_id}', [OrderController::class, 'single'])
+::get('/order', [OrderController::class, 'index'])
 ->name('order.index')
+->middleware('auth');
+
+Route
+::get('/order/{order_id}', [OrderController::class, 'single'])
+->name('order.single')
 ->middleware('auth');
 
 // 500 error

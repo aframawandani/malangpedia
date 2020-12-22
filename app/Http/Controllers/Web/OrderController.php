@@ -8,11 +8,13 @@ use Inertia\Inertia;
 
 class OrderController extends Controller
 {
-    public function index()
-    {}
+    public function index(Request $request)
+    {
+        return Inertia::render('Order/Index');
+    }
 
     public function single(Request $request, $order_id)
     {
-        return Inertia::render('Order/Single')->with('order_id', $order_id);
+        return Inertia::render('Order/Single')->with('orderId', intval($order_id));
     }
 }

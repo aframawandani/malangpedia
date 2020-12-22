@@ -26,28 +26,28 @@
               <form id="updateForm" @submit.prevent="updateFormOnSubmit">
                 <div v-bind:class="`form-group${errors.name instanceof Array ? ' has-error' : ''}`">
                   <label for="namaInput">Nama</label>
-                  <input class="form-control" type="text" name="name" v-bind:disabled="isGettingDetail || isUpdating" spellcheck="false" autocomplete="off" v-model="input.name">
+                  <input class="form-control" type="text" name="name" spellcheck="false" autocomplete="off" v-model="input.name">
                   <div v-for="(error, i) in (errors.name instanceof Array ? errors.name : [])" v-bind:key="i" class="help-block">{{error}}</div>
                 </div>
                 <div v-bind:class="`form-group${errors.slug instanceof Array ? ' has-error' : ''}`">
                   <label for="slugInput">Slug</label>
-                  <input class="form-control" type="text" name="slug" v-bind:disabled="isGettingDetail || isUpdating" spellcheck="false" autocomplete="off" v-model="input.slug">
+                  <input class="form-control" type="text" name="slug" spellcheck="false" autocomplete="off" v-model="input.slug">
                   <div v-for="(error, i) in (errors.slug instanceof Array ? errors.slug : [])" v-bind:key="i" class="help-block">{{error}}</div>
                 </div>
                 <div class="form-group">
                   <label for="description">Deskripsi</label>
-                  <textarea class="form-control" name="description" v-bind:disabled="isGettingDetail || isUpdating" rows="6" spellcheck="false" autocomplete="off" v-model="input.description"></textarea>
+                  <textarea class="form-control" name="description" rows="6" spellcheck="false" autocomplete="off" v-model="input.description"></textarea>
                   <div v-for="(error, i) in (errors.description instanceof Array ? errors.description : [])" v-bind:key="i" class="help-block">{{error}}</div>
                 </div>
                 <div v-bind:class="`form-group${errors.parent_category_id instanceof Array ? ' has-error' : ''}`">
                   <label>Kategori Induk</label>
-                  <select id="parentCategoryIdSelect" name="parent_category_id" v-bind:disabled="isGettingDetail || isUpdating" style="width: 100%;">
+                  <select id="parentCategoryIdSelect" name="parent_category_id" style="width: 100%;">
                     <option v-if="typeof input.parent_category_id === 'number'" selected v-bind:value="input.parent_category_id">{{meta.parent_category_name}}</option>
                   </select>
                   <div v-for="(error, i) in (errors.parent_category_id instanceof Array ? errors.parent_category_id : [])" v-bind:key="i" class="help-block">{{error}}</div>
                 </div>
                 <div>
-                  <button class="btn btn-primary" v-bind:disabled="isGettingDetail || isUpdating">
+                  <button class="btn btn-primary" v-bind:disabled="isUpdating">
                     <i v-if="isUpdating" class="feather icon-loader"></i>
                     <span class="text">Perbarui</span>
                   </button>

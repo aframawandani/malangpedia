@@ -27,8 +27,8 @@ const store = new Vuex.Store({
         }
       });
     },
-    insertShoppingCartProduct(state, {product_id, quantity}) {
-      axios({
+    insertShoppingCartProduct(state, {product_id, quantity, callback}) {
+      const promise = axios({
         method: 'POST',
         url: '/api/shopping-cart-product',
         data: {
@@ -50,12 +50,21 @@ const store = new Vuex.Store({
             }
           }
         }
+
+        return response;
       })
       .catch(error => {
         if (error.response.status === 401) {
           Inertia.visit('/auth/login');
         }
+
+        return error;
       });
+
+      if (typeof callback === 'function')
+      {
+        callback.call(null, promise);
+      }
     },
     updateQuantityShoppingCartProduct(state, {idx, quantity}) {
       if (shoppingCartProductCancelTokenSource instanceof Object) {

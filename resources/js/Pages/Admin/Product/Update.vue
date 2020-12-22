@@ -25,11 +25,11 @@
             <div class="box-body">
               <form id="insertForm" @submit.prevent="insertFormOnSubmit">
                 <div :class="`form-group${errors.name instanceof Array ? ' has-error' : ''}`">
-                  <input class="form-control" type="text" name="name" :disabled="isInserting" spellcheck="false" autocomplete="off" placeholder="Nama Produk" ref="nameInput" v-model="input.name">
+                  <input class="form-control" type="text" name="name" spellcheck="false" autocomplete="off" placeholder="Nama Produk" ref="nameInput" v-model="input.name">
                   <div v-for="(error, i) in errors.name" :key="i" class="help-block">{{error}}</div>
                 </div>
                 <div>
-                  <textarea class="form-control" id="descriptionTextarea" name="description" :disabled="isInserting" spellcheck="false" autocomplete="off" rows="8" v-model="input.description"></textarea>
+                  <textarea class="form-control" id="descriptionTextarea" name="description" spellcheck="false" autocomplete="off" rows="8" v-model="input.description"></textarea>
                 </div>
               </form>
             </div>
@@ -39,9 +39,9 @@
           <div class="box box-solid d-flex flex-column">
             <div class="box-body">
               <div>
-                <button class="btn btn-primary" form="insertForm" :disabled="isInserting">
-                  <i v-if="isInserting" class="feather icon-loader"></i>
-                  <span class="text">{{isInserting ? 'Menambah' : 'Perbarui'}}</span>
+                <button class="btn btn-primary" form="insertForm" :disabled="isUpdating">
+                  <i v-if="isUpdating" class="feather icon-loader"></i>
+                  <span class="text">{{isUpdating ? 'Memperbarui' : 'Perbarui'}}</span>
                 </button>
               </div>
             </div>
@@ -55,7 +55,7 @@
                 <i class="feather icon-loader"></i>
               </div>
               <div v-if="!isGettingDetail" :class="`form-group mb-0${errors.image instanceof Array ? ' has-error' : ''}`">
-                <input class="custom-file-input" id="imageInput" type="file" form="insertForm" name="image" :disabled="isInserting" ref="imageInput" @change="imageInputOnChange">
+                <input class="custom-file-input" id="imageInput" type="file" form="insertForm" name="image" ref="imageInput" @change="imageInputOnChange">
                 <div v-if="typeof meta.image === 'string'" class="d-flex">
                   <div class="d-flex">
                     <label class="custom-file-label font-normal cursor-pointer text-primary mb-0" for="imageInput">Ganti</label>
@@ -78,17 +78,17 @@
             <div class="box-body">
               <div :class="`form-group${errors.slug instanceof Array ? ' has-error' : ''}`">
                 <label>Slug</label>
-                <input class="form-control" id="slugInput" type="text" form="insertForm" name="slug" :disabled="isInserting" spellcheck="false" autocomplete="off" v-model="input.slug">
+                <input class="form-control" id="slugInput" type="text" form="insertForm" name="slug" spellcheck="false" autocomplete="off" v-model="input.slug">
                 <div v-for="(error, i) in errors.slug" :key="i" class="help-block">{{error}}</div>
               </div>
               <div :class="`form-group${errors.quantity instanceof Array ? ' has-error' : ''}`">
                 <label>Jumlah</label>
-                <input class="form-control" id="hargaInput" type="number" form="insertForm" name="quantity" :disabled="isInserting" v-model="input.quantity">
+                <input class="form-control" id="hargaInput" type="number" form="insertForm" name="quantity" v-model="input.quantity">
                 <div v-for="(error, i) in errors.quantity" :key="i" class="help-block">{{error}}</div>
               </div>
               <div :class="`form-group${errors.price instanceof Array ? ' has-error' : ''}`">
                 <label>Harga</label>
-                <input class="form-control" id="hargaInput" type="number" form="insertForm" name="price" :disabled="isInserting" v-model="input.price">
+                <input class="form-control" id="hargaInput" type="number" form="insertForm" name="price" v-model="input.price">
                 <div v-for="(error, i) in errors.price" :key="i" class="help-block">{{error}}</div>
               </div>
             </div>
@@ -128,10 +128,13 @@ export default {
     CategoryCheckbox
   },
   layout: Layout,
+  props: {
+    productId: String
+  },
   data() {
     return {
       isGettingDetail: true,
-      isInserting: false,
+      isUpdating: false,
       errors: {},
       input: {
         name: null,
@@ -194,17 +197,17 @@ export default {
       }
     },
     insertFormOnSubmit(event) {
-      this.isInserting = true;
+      this.isUpdating = true;
       this.errors = {};
 
       const formData = new FormData(event.target);
 
       formData.append('_method', 'PATCH');
-      formData.append('product_id', this.product_id);
+      formData.append('product_id', this.productId);
       formData.append('category_id', this.input.category_id);
       formData.set('description', CKEDITOR.instances.descriptionTextarea.getData());
 
-      if (this.data.image === this.meta.image) {
+      if (this.input.image === this.meta.image) {
         formData.delete('image');
       }
 
@@ -228,7 +231,7 @@ export default {
         }
       })
       .finally(() => {
-        this.isInserting = false;
+        this.isUpdating = false;
       });
     }
   },

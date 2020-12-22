@@ -43,7 +43,7 @@ class PutRequest extends FormRequest
             'quantity.required' => 'Kuantitas harus diisi',
             'quantity.numeric' => 'Kuantitas harus berupa angka',
             'quantity.min' => 'Kuantitas minimal 1',
-            'quantity.max' => 'Kuantitas melibihi kuantitas produk'
+            'quantity.max' => 'Kuantitas barang tidak cukup'
         ];
     }
 }

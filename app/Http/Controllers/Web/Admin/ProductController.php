@@ -18,8 +18,8 @@ class ProductController extends Controller
         return Inertia::render('Admin/Product/Insert');
     }
 
-    public function update()
+    public function update(Request $request, $product_id)
     {
-        return Inertia::render('Admin/Product/Update');
+        return Inertia::render('Admin/Product/Update')->with('productId', intval($product_id));
     }
 }
