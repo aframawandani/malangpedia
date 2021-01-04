@@ -126,6 +126,11 @@ Route
 ->middleware('auth.api');
 
 Route
+::get('/order/{order_id}', [OrderController::class, 'getDetail'])
+->name('api.order.getDetail')
+->middleware('auth.api');
+
+Route
 ::put('/order', [OrderController::class, 'put'])
 ->name('api.order.put')
 ->middleware('auth.api');

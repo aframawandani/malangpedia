@@ -11,8 +11,11 @@ use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\CategoryCollection;
+use App\Http\Resources\GalleryResource;
 use App\Models\Category;
 use App\Models\Product_2_Category;
+use App\Models\Gallery;
+use App\Models\Order_2_product;
 
 class ProductController extends Controller
 {
@@ -30,10 +33,21 @@ class ProductController extends Controller
     {
         $product =
         Product
-        ::select('product_id', 'name', 'description', 'price', 'quantity', DB::raw("CONCAT('/assets/images/products/', image, '.jpg') AS image"), DB::raw("CONCAT('/product/', slug) as url"))
-        ->where('slug', $product_slug)
+        ::select('products.product_id', 'products.name', 'products.description', 'products.price', 'products.quantity', DB::raw("CONCAT('/assets/images/products/', products.image, '.jpg') AS image"), DB::raw("CONCAT('/product/', products.slug) as url"))
+        ->where('products.slug', $product_slug)
         ->get()
         ->first();
+        $order_2_product =
+        Order_2_product
+        ::select(DB::raw("SUM(order_2_products.quantity) AS sold"))
+        ->leftJoin('orders', 'orders.order_id', '=', 'order_2_products.order_id')
+        ->where('order_2_products.product_id', $product->product_id)
+        ->where('orders.status', '>', 3)
+        ->where('orders.status', '<', 9)
+        ->groupBy('order_2_products.product_id')
+        ->get()
+        ->first();
+        $product->sold = is_numeric(@$order_2_product->sold) ? intval(@$order_2_product->sold) : 0;
         $product_2_category_array =
         Product_2_category
         ::select('categories.name', 'categories.slug')
@@ -53,6 +67,11 @@ class ProductController extends Controller
         }
 
         $product->setRelation('categories', $product_2_category_array);
+
+        $gallery_array = Gallery::select(DB::raw("CONCAT('/assets/images/galleries/', image, '.jpg') AS image"))->where('product_id', $product->product_id)->get()->all();
+        $gallery_collection = GalleryResource::collection($gallery_array);
+
+        $product->setRelation('galleries', $gallery_collection->collection);
 
         return new ProductResource($product);
     }

@@ -17,7 +17,7 @@ class OrderController extends Controller
     {
         $order_builder =
         Order
-        ::select('orders.order_id', 'users.name AS user_name', 'orders.created_at')
+        ::select('orders.order_id', 'users.name AS user_name', 'orders.address', 'orders.created_at')
         ->leftJoin('users', 'users.id', '=', 'orders.user_id')
         ->orderBy('orders.created_at', 'DESC');
 
@@ -35,6 +35,7 @@ class OrderController extends Controller
             return [
                 'order_id' => $order->order_id,
                 'user_name' => $order->user_name,
+                'address' => $order->address,
                 'created_at' => strtotime($order->created_at) * 1000,
                 'products' => $order_2_product_collection
             ];

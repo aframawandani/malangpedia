@@ -25,6 +25,7 @@
                     <th style="min-width: 48px; width: 48px;">#</th>
                     <th style="min-width: 240px; width: 240px;">Nama</th>
                     <th style="min-width: 100px; width: 100px;">Jumlah</th>
+                    <th style="min-width: 100px; width: 100px;">Terjual</th>
                     <th style="min-width: 120px; width: 120px;">Harga</th>
                     <th style="min-width: 200px; width: 200px;">Owner</th>
                     <th style="min-width: 140px; width: 140px;">Dibuat</th>
@@ -111,6 +112,9 @@ export default {
               render: data => typeof data === 'number' ? data.toString() : '-'
             },
             {
+              data: 'sold'
+            },
+            {
               data: 'price',
               render: data => data === null ? '-' : `Rp ${(Number.parseFloat(data)).toLocaleString('id-ID')}`
             },
@@ -124,7 +128,7 @@ export default {
               render: data => {
                 const date = new Date(data);
 
-                return `${date.getDate().toString().padStart(2, '0')}-${date.getMonth().toString().padStart(2, '0')}-${date.getFullYear().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+                return `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
               },
               sortable: false
             },
@@ -133,7 +137,7 @@ export default {
               render: data => {
                 const date = new Date(data);
 
-                return `${date.getDate().toString().padStart(2, '0')}-${date.getMonth().toString().padStart(2, '0')}-${date.getFullYear().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+                return `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
               },
               sortable: false
             }

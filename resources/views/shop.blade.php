@@ -35,7 +35,7 @@ $pathinfo = $request->getPathInfo();
 
 @inertia
 
-  <script src="/assets/js/jquery-3.3.1.min.js"></script>
+  <script src="/assets/js/jquery-2.2.5.min.js"></script>
   <script src="/assets/js/bootstrap.min.js"></script>
   <script src="/assets/js/jquery.magnific-popup.min.js"></script>
   <script src="/assets/js/jquery-ui.min.js"></script>

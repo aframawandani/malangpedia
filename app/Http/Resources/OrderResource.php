@@ -18,6 +18,8 @@ class OrderResource extends JsonResource
             'order_id' => $this->order_id,
             'products' => $this->products,
             'address' => $this->address,
+            'note' => $this->note,
+            'status_idx' => $this->status_idx,
             'created_at' => strtotime($this->created_at) * 1000
         ];
     }

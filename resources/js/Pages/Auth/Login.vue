@@ -32,6 +32,10 @@
 </template>
 
 <style>
+body {
+  overflow: hidden;
+}
+
 .malangpedia-text {
   font-size: 32px;
   font-weight: 200;
@@ -42,6 +46,7 @@
 .login-page {
   background-color: #e9ecef;
   height: 100%;
+  overflow: auto;
 }
 
 .login-box-msg {

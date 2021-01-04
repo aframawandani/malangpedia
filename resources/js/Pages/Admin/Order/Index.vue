@@ -24,6 +24,7 @@
                     <th style="min-width: 68px; padding: 8px !important; width: 68px;">Tools</th>
                     <th style="min-width: 48px; width: 48px;">#</th>
                     <th style="min-width: 200px; width: 200px;">User</th>
+                    <th style="min-width: 240px; width: 240px;">Alamat</th>
                     <th style="min-width: 240px; width: 240px;">Produk</th>
                     <th style="min-width: 120px; width: 120px;">Total</th>
                     <th style="min-width: 120px; width: 120px;">Waktu</th>
@@ -107,6 +108,11 @@ export default {
               data: 'user_name'
             },
             {
+              data: 'address',
+              searchable: false,
+              sortable: false
+            },
+            {
               data: 'products',
               render: data => data.reduce((acc, cur, idx) => `${acc}<div>${cur.quantity.toString()}x <a href="${cur.product_url}">${cur.product_name}</a></div>`, ''),
               searchable: false,
@@ -123,7 +129,7 @@ export default {
               render: data => {
                 const date = new Date(data);
 
-                return `${date.getDate().toString().padStart(2, '0')}-${date.getMonth().toString().padStart(2, '0')}-${date.getFullYear().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+                return `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
               },
               searchable: false,
               sortable: false

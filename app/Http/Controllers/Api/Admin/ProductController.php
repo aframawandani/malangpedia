@@ -13,7 +13,9 @@ use App\Http\Requests\Admin\Product\PatchRequest;
 use App\Http\Requests\Admin\Product\DeleteRequest;
 use App\Http\Resources\Admin\ProductResource;
 use App\Models\Product;
+use App\Models\Order_2_product;
 use App\Models\Product_2_category;
+use App\Models\Gallery;
 
 class ProductController extends Controller
 {
@@ -26,12 +28,24 @@ class ProductController extends Controller
 
         return Datatables::of($product_builder)->setTransformer(function ($product)
         {
+            $order_2_product =
+            Order_2_product
+            ::select(DB::raw("SUM(order_2_products.quantity) AS sold"))
+            ->leftJoin('orders', 'orders.order_id', '=', 'order_2_products.order_id')
+            ->where('order_2_products.product_id', $product->product_id)
+            ->where('orders.status', '>', 3)
+            ->where('orders.status', '<', 9)
+            ->groupBy('order_2_products.product_id')
+            ->get()
+            ->first();
+
             return [
                 'product_id' => $product->product_id,
                 'name' => $product->name,
                 'image' => $product->image,
                 'price' => is_string($product->price) ? floatval($product->price) : null,
                 'quantity' => $product->quantity,
+                'sold' => is_numeric(@$order_2_product->sold) ? intval(@$order_2_product->sold) : 0,
                 'owner' => $product->owner,
                 'created_at' => strtotime($product->created_at) * 1000,
                 'updated_at' => strtotime($product->updated_at) * 1000
@@ -72,6 +86,7 @@ class ProductController extends Controller
         $user = $request->user();
         $product_data = $request->validated();
         $product_data['owner_user_id'] = $user->id;
+        $product_gallery_array = $request->file('gallery');
         $category_id_array = $product_data['category_ids'];
 
         unset($product_data['image']);
@@ -107,6 +122,22 @@ class ProductController extends Controller
         }
 
         $product = Product::create($product_data);
+
+        foreach ($product_gallery_array AS $i => $product_gallery)
+        {
+            $gallery_data = [
+                'product_id' => $product->product_id,
+                'order' => $i
+            ];
+            $uuid = (string) Str::Uuid();
+            $absolute_path = public_path()."\\assets\\images\\galleries\\$uuid";
+            $gallery_data['image'] = $uuid;
+            $image = ImageManagerStatic::make($product_gallery);
+
+            $image->save("$absolute_path.jpg", 100, 'jpg');
+
+            Gallery::create($gallery_data);
+        }
 
         foreach (@$category_id_array ?? [] AS $category_id)
         {

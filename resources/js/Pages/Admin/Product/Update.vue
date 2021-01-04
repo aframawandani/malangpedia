@@ -19,11 +19,31 @@
       </ol>
     </section>
     <section class="content">
-      <div class="row h-100">
-        <div class="col-md-8 h-100">
+      <div class="row">
+        <div class="col-md-8">
           <div class="box box-solid d-flex flex-column">
             <div class="box-body">
-              <form id="insertForm" @submit.prevent="insertFormOnSubmit">
+              <div class="product__gallery">
+                <div v-for="(gallery, i) in meta.gallery" :key="i" class="product__gallery__list">
+                  <img class="product__gallery__image" :src="gallery.src">
+                  <button class="product__gallery__remove__button" @click="(i => () => {removeProdyctGallery(i)})(i)">
+                    <i class="feather icon-trash"></i>
+                  </button>
+                </div>
+                <div class="product__gallery__list">
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="galleryFileInput" form="updateForm" @change="galleryFileInputOnChange">
+                    <label class="custom-file-label mb-0 product__gallery__input__label" for="galleryFileInput">
+                      <i class="feather icon-plus"></i>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box box-solid d-flex flex-column">
+            <div class="box-body">
+              <form id="updateForm" enctype="multipart/form-data" @submit.prevent="updateFormOnSubmit">
                 <div :class="`form-group${errors.name instanceof Array ? ' has-error' : ''}`">
                   <input class="form-control" type="text" name="name" spellcheck="false" autocomplete="off" placeholder="Nama Produk" ref="nameInput" v-model="input.name">
                   <div v-for="(error, i) in errors.name" :key="i" class="help-block">{{error}}</div>
@@ -35,11 +55,11 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4 h-100">
+        <div class="col-md-4">
           <div class="box box-solid d-flex flex-column">
             <div class="box-body">
               <div>
-                <button class="btn btn-primary" form="insertForm" :disabled="isUpdating">
+                <button class="btn btn-primary" form="updateForm" :disabled="isUpdating">
                   <i v-if="isUpdating" class="feather icon-loader"></i>
                   <span class="text">{{isUpdating ? 'Memperbarui' : 'Perbarui'}}</span>
                 </button>
@@ -51,11 +71,8 @@
               <h1 class="box-title">Gambar</h1>
             </div>
             <div class="box-body">
-              <div v-if="isGettingDetail" class="d-flex justify-content-center">
-                <i class="feather icon-loader"></i>
-              </div>
-              <div v-if="!isGettingDetail" :class="`form-group mb-0${errors.image instanceof Array ? ' has-error' : ''}`">
-                <input class="custom-file-input" id="imageInput" type="file" form="insertForm" name="image" ref="imageInput" @change="imageInputOnChange">
+              <div class="form-group mb-0 overflow-hidden">
+                <input class="custom-file-input" id="imageInput" type="file" form="updateForm" name="image" ref="imageInput" @change="imageInputOnChange">
                 <div v-if="typeof meta.image === 'string'" class="d-flex">
                   <div class="d-flex">
                     <label class="custom-file-label font-normal cursor-pointer text-primary mb-0" for="imageInput">Ganti</label>
@@ -78,17 +95,17 @@
             <div class="box-body">
               <div :class="`form-group${errors.slug instanceof Array ? ' has-error' : ''}`">
                 <label>Slug</label>
-                <input class="form-control" id="slugInput" type="text" form="insertForm" name="slug" spellcheck="false" autocomplete="off" v-model="input.slug">
+                <input class="form-control" id="slugInput" type="text" form="updateForm" name="slug" spellcheck="false" autocomplete="off" v-model="input.slug">
                 <div v-for="(error, i) in errors.slug" :key="i" class="help-block">{{error}}</div>
               </div>
               <div :class="`form-group${errors.quantity instanceof Array ? ' has-error' : ''}`">
                 <label>Jumlah</label>
-                <input class="form-control" id="hargaInput" type="number" form="insertForm" name="quantity" v-model="input.quantity">
+                <input class="form-control" id="hargaInput" type="number" form="updateForm" name="quantity" v-model="input.quantity">
                 <div v-for="(error, i) in errors.quantity" :key="i" class="help-block">{{error}}</div>
               </div>
               <div :class="`form-group${errors.price instanceof Array ? ' has-error' : ''}`">
                 <label>Harga</label>
-                <input class="form-control" id="hargaInput" type="number" form="insertForm" name="price" v-model="input.price">
+                <input class="form-control" id="hargaInput" type="number" form="updateForm" name="price" v-model="input.price">
                 <div v-for="(error, i) in errors.price" :key="i" class="help-block">{{error}}</div>
               </div>
             </div>
@@ -98,7 +115,7 @@
               <h1 class="box-title">Kategori</h1>
             </div>
             <div class="box-body" style="max-height: 200px;">
-              <category-checkbox v-for="(category, i) in categories" :key="i" :category="category" :checkedCategories="meta.checkedCategories" :onChange="function () {}" />
+              <category-checkbox v-for="(category, i) in categories" :key="i" :category="category" :checkedCategories="meta.checkedCategories" />
             </div>
           </div>
         </div>
@@ -123,6 +140,8 @@ import scripts from '@/scripts';
 import Layout from '@/Shared/Admin/Layout';
 import CategoryCheckbox from './Components/CategoryCheckbox';
 
+let $productGallery;
+
 export default {
   components: {
     CategoryCheckbox
@@ -136,20 +155,18 @@ export default {
       isGettingDetail: true,
       isUpdating: false,
       errors: {},
+      data: {},
       input: {
         name: null,
         description: null,
         slug: null,
         price: null,
         quantity: null,
-        category_id: {
-          insert: [],
-          update: [],
-          delete: []
-        }
+        gallery: []
       },
       meta: {
         image: null,
+        gallery: [],
         checkedCategories: {}
       },
       categories: []
@@ -167,47 +184,55 @@ export default {
         reader.readAsDataURL(file);
       });
     },
+    removeProdyctGallery(i) {
+      this.meta.gallery.splice(i, 1);
+    },
+    galleryFileInputOnChange(event) {
+      const input = event.target;
+
+      Array.prototype.forEach.call(event.target.files, file => {
+        const reader = new FileReader();
+
+        reader.onload = event => {
+          this.meta.gallery.push({
+            src: event.currentTarget.result
+          });
+
+          setTimeout(() => {
+            input.removeEventListener('change', this.galleryFileInputOnChange);
+            input.removeAttribute('id');
+
+            input.name = 'gallery[]';
+
+            input.setAttribute('form', 'updateForm');
+
+            const $input = $('<input class="custom-file-input" id="galleryFileInput" type="file">');
+
+            $input[0].addEventListener('change', this.galleryFileInputOnChange);
+
+            $('.product__gallery').children().eq(this.meta.gallery.length - 1).append(input);
+            $('.product__gallery').children().eq(this.meta.gallery.length).children().append($input);
+          });
+        }
+
+        reader.readAsDataURL(file);
+      });
+    },
     removeMetaImageOnClick() {
       this.$refs.imageInput.value = '';
       this.meta.image = null;
     },
-    categoryCheckboxOnChange(event) {
-      const checkbox = event.target;
-      const category_id = parseInt(checkbox.value);
-
-      if (checkbox.checked) {
-        const i = this.input.category_id.delete.indexOf(category_id);
-
-        if (i > -1) {
-          this.input.category_id.delete.splice(i, 1);
-        }
-        else {
-          this.input.category_id.insert.push(category_id);
-        }
-      }
-      else {
-        const i = this.input.category_id.insert.indexOf(category_id);
-
-        if (i > -1) {
-          this.input.category_id.insert.splice(i, 1);
-        }
-        else {
-          this.input.cateogry_id.delete.push(category_id);
-        }
-      }
-    },
-    insertFormOnSubmit(event) {
+    updateFormOnSubmit(event) {
       this.isUpdating = true;
       this.errors = {};
 
       const formData = new FormData(event.target);
 
-      formData.append('_method', 'PATCH');
-      formData.append('product_id', this.productId);
-      formData.append('category_id', this.input.category_id);
+      formData.append('_method', 'PUT');
+      formData.append('product_id', this.data.product_id);
       formData.set('description', CKEDITOR.instances.descriptionTextarea.getData());
 
-      if (this.input.image === this.meta.image) {
+      if (this.data.image === this.meta.image) {
         formData.delete('image');
       }
 
@@ -217,7 +242,7 @@ export default {
         data: formData
       })
       .then(response => {
-        this.$inertia.visit('/admin/product');
+        // this.$inertia.visit('/admin/product');
       })
       .catch(error => {
         if (error.response.data instanceof Object)
@@ -238,46 +263,22 @@ export default {
   mounted() {
     scripts.include('/assets/admin/js/select2.min.js').then(() => {
       scripts.include('/assets/admin/bower_components/ckeditor/ckeditor.js').then(() => {
-        const matches = document.location.pathname.match(/\/admin\/product\/update\/([0-9]+)/);
+        $productGallery = $('.product_gallery');
 
-        axios
-        .get(`/api/admin/product/detail/${matches[1]}`)
-        .then(response => {
+        $(this.$refs.nameInput).on('input', event => {
+          this.input.slug = slugify(event.currentTarget.value.toLowerCase());
+        });
+
+        CKEDITOR.replace('descriptionTextarea');
+
+        axios.get('/api/category').then(response => {
           if (response.data instanceof Object) {
             const data = response.data.data;
 
             if (data instanceof Object) {
-              this.input.name = data.name;
-              this.input.description = data.description;
-              this.input.slug = data.slug;
-              this.input.quantity = data.quantity;
-              this.input.price = data.price;
-              this.meta.image = data.image;
-
-              data.category_id.forEach(category_id => {
-                this.meta.checkedCategories[category_id] = true;
-              });
-
-              axios.get('/api/category').then(response => {
-                if (response.data instanceof Object) {
-                  const data = response.data.data;
-
-                  if (data instanceof Object) {
-                    this.categories = data;
-                  }
-                }
-              });
-
-              CKEDITOR.replace('descriptionTextarea');
+              this.categories = data;
             }
           }
-        })
-        .finally(() => {
-          this.isGettingDetail = false;
-        });
-
-        $(this.$refs.nameInput).on('input', event => {
-          this.input.slug = slugify(event.currentTarget.value.toLowerCase());
         });
       });
     });

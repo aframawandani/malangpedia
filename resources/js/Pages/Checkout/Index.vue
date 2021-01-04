@@ -128,6 +128,8 @@ export default {
           const data = response.data.data;
 
           if (data instanceof Object) {
+            $(this.$refs.orderConfirmationModal).modal('hide');
+
             this.$inertia.visit(`/order/${data.order_id}`);
           }
         }

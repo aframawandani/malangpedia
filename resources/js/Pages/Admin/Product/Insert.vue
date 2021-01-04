@@ -19,11 +19,31 @@
       </ol>
     </section>
     <section class="content">
-      <div class="row h-100">
-        <div class="col-md-8 h-100">
+      <div class="row">
+        <div class="col-md-8">
           <div class="box box-solid d-flex flex-column">
             <div class="box-body">
-              <form id="insertForm" @submit.prevent="insertFormOnSubmit">
+              <div class="product__gallery">
+                <div v-for="(gallery, i) in meta.gallery" :key="i" class="product__gallery__list">
+                  <img class="product__gallery__image" :src="gallery.src">
+                  <button class="product__gallery__remove__button" @click="(i => () => {removeProdyctGallery(i)})(i)">
+                    <i class="feather icon-trash"></i>
+                  </button>
+                </div>
+                <div class="product__gallery__list">
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="galleryFileInput" form="insertForm" @change="galleryFileInputOnChange">
+                    <label class="custom-file-label mb-0 product__gallery__input__label" for="galleryFileInput">
+                      <i class="feather icon-plus"></i>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box box-solid d-flex flex-column">
+            <div class="box-body">
+              <form id="insertForm" enctype="multipart/form-data" @submit.prevent="insertFormOnSubmit">
                 <div :class="`form-group${errors.name instanceof Array ? ' has-error' : ''}`">
                   <input class="form-control" type="text" name="name" spellcheck="false" autocomplete="off" placeholder="Nama Produk" ref="nameInput" v-model="input.name">
                   <div v-for="(error, i) in errors.name" :key="i" class="help-block">{{error}}</div>
@@ -35,7 +55,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4 h-100">
+        <div class="col-md-4">
           <div class="box box-solid d-flex flex-column">
             <div class="box-body">
               <div>
@@ -120,6 +140,8 @@ import scripts from '@/scripts';
 import Layout from '@/Shared/Admin/Layout';
 import CategoryCheckbox from './Components/CategoryCheckbox';
 
+let $productGallery;
+
 export default {
   components: {
     CategoryCheckbox
@@ -136,10 +158,12 @@ export default {
         description: null,
         slug: null,
         price: null,
-        quantity: null
+        quantity: null,
+        gallery: []
       },
       meta: {
         image: null,
+        gallery: [],
         checkedCategories: {}
       },
       categories: []
@@ -152,6 +176,40 @@ export default {
 
         reader.onload = event => {
           this.meta.image = event.currentTarget.result;
+        }
+
+        reader.readAsDataURL(file);
+      });
+    },
+    removeProdyctGallery(i) {
+      this.meta.gallery.splice(i, 1);
+    },
+    galleryFileInputOnChange(event) {
+      const input = event.target;
+
+      Array.prototype.forEach.call(event.target.files, file => {
+        const reader = new FileReader();
+
+        reader.onload = event => {
+          this.meta.gallery.push({
+            src: event.currentTarget.result
+          });
+
+          setTimeout(() => {
+            input.removeEventListener('change', this.galleryFileInputOnChange);
+            input.removeAttribute('id');
+
+            input.name = 'gallery[]';
+
+            input.setAttribute('form', 'insertForm');
+
+            const $input = $('<input class="custom-file-input" id="galleryFileInput" type="file">');
+
+            $input[0].addEventListener('change', this.galleryFileInputOnChange);
+
+            $('.product__gallery').children().eq(this.meta.gallery.length - 1).append(input);
+            $('.product__gallery').children().eq(this.meta.gallery.length).children().append($input);
+          });
         }
 
         reader.readAsDataURL(file);
@@ -181,7 +239,7 @@ export default {
         data: formData
       })
       .then(response => {
-        this.$inertia.visit('/admin/product');
+        // this.$inertia.visit('/admin/product');
       })
       .catch(error => {
         if (error.response.data instanceof Object)
@@ -202,6 +260,8 @@ export default {
   mounted() {
     scripts.include('/assets/admin/js/select2.min.js').then(() => {
       scripts.include('/assets/admin/bower_components/ckeditor/ckeditor.js').then(() => {
+        $productGallery = $('.product_gallery');
+
         $(this.$refs.nameInput).on('input', event => {
           this.input.slug = slugify(event.currentTarget.value.toLowerCase());
         });

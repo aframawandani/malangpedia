@@ -125,6 +125,7 @@ export default {
       })
       .finally(() => {
         this.isGettingProducts = false;
+        this.isLoading = false;
       });
     }    
   },

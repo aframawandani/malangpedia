@@ -333,10 +333,6 @@ a.btn.btn-primary {
   border-radius: 0;
 }
 
-.box:last-of-type {
-  margin-bottom: 0;
-}
-
 .box-header {
   border-bottom: #d8dbe0 solid 1px;
   display: flex;
@@ -654,4 +650,64 @@ div.dataTables_filter input {
 
 .custom-file-label {
   line-height: 18px;
+}
+
+.product__gallery {
+  display: flex;
+  overflow-y: hidden;
+}
+
+.product__gallery__list {
+  position: relative;
+}
+
+.product__gallery__list {
+  flex-shrink: 0;
+  margin: 8px;
+}
+
+.product__gallery__list > .custom-file {
+  display: flex;
+}
+
+.product__gallery__image {
+  object-fit: contain;
+  outline: 1px solid #b8bdc6;
+  outline-offset: -1px;
+  height: 100px;
+  width: 100px;
+}
+
+.product__gallery__input__label {
+  align-items: center;
+  border: 1px dashed #b8bdc6;
+  cursor: pointer;
+  display: flex;
+  height: 100px;
+  justify-content: center;
+  width: 100px;
+}
+
+.product__gallery__input__label > .feather {
+  color: #b8bdc6;
+  font-size: 28px;
+}
+
+.product__gallery__remove__button {
+  background-color: #e53e3e;
+  border-radius: 50%;
+  color: #ffffff;
+  display: flex;
+  padding: 4px;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+}
+
+.gallery-thumbnail-item {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  max-height: 120px;
+  max-width: 120px;
 }
