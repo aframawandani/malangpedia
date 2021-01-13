@@ -45,6 +45,8 @@ class PostLoginRequest extends FormRequest
             }),
             '_password' => Rule::requiredIf(function ()
             {
+                $login_data = $this->only('email', 'password');
+
                 if (Auth::attempt($login_data))
                 {
                     Auth::login($this->user);
