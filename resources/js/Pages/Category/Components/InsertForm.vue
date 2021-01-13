@@ -31,7 +31,6 @@
 <script>
 import cookie from '../../../cookies';
 import axios from 'axios';
-import { XIcon } from 'vue-feather-icons';
 
 const messageTypes = {
   'info': true,
@@ -145,9 +144,6 @@ export default {
 
       return colorClasses['info'];
     }
-},
-  components: {
-    XIcon
-  }
+}
 }
 </script>

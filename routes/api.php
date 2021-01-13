@@ -33,7 +33,7 @@ Route
 ->name('api.auth.user.get');
 
 Route
-::post('/auth/login', [AuthController::class, 'login'])
+::post('/auth/login', [ApiAuthController::class, 'postLogin'])
 ->name('api.auth.login.post')
 ->middleware('guest');
 
@@ -60,7 +60,8 @@ Route
 
 Route
 ::get('/newest-products', [ProductController::class, 'getNewestProducts'])
-->name('api.products.newest');
+->name('api.products.newest')
+->middleware('auth');
 
 Route
 ::get('/most-viewed-products', [ProductController::class, 'getMostViewedProducts'])
@@ -101,49 +102,49 @@ Route
 Route
 ::get('/shopping-cart-product', [ShoppingCartProductController::class, 'get'])
 ->name('api.shopping_cart_product.get')
-->middleware('auth.api');
+->middleware('auth');
 
 Route
 ::put('/shopping-cart-product', [ShoppingCartProductController::class, 'put'])
 ->name('api.shopping_cart_product.put')
-->middleware('auth.api');
+->middleware('auth');
 
 Route
 ::patch('/shopping-cart-product', [ShoppingCartProductController::class, 'patch'])
 ->name('api.shopping_cart_product.patch')
-->middleware('auth.api');
+->middleware('auth');
 
 Route
 ::delete('/shopping-cart-product', [ShoppingCartProductController::class, 'destroy'])
 ->name('api.shopping_cart_product.destroy')
-->middleware('auth.api');
+->middleware('auth');
 
 // Order
 
 Route
 ::get('/order', [OrderController::class, 'get'])
 ->name('api.order.get')
-->middleware('auth.api');
+->middleware('auth');
 
 Route
 ::get('/order/{order_id}', [OrderController::class, 'getDetail'])
 ->name('api.order.getDetail')
-->middleware('auth.api');
+->middleware('auth');
 
 Route
 ::put('/order', [OrderController::class, 'put'])
 ->name('api.order.put')
-->middleware('auth.api');
+->middleware('auth');
 
 Route
 ::patch('/order', [OrderController::class, 'patch'])
 ->name('api.order.patch')
-->middleware('auth.api');
+->middleware('auth');
 
 Route
 ::delete('/order', [OrderController::class, 'destroy'])
 ->name('api.order.delete')
-->middleware('auth.api');
+->middleware('auth');
 
 // Admin Product
 

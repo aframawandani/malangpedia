@@ -103,7 +103,8 @@ export default {
         }
       })
       .then(response => {
-        document.location = this.referer instanceof String ? this.referer : document.location.origin;
+        console.log(response);
+        // document.location = this.referer instanceof String ? this.referer : document.location.origin;
       })
       .catch(error => {
         if (error.response instanceof Object && error.response.data instanceof Object) {

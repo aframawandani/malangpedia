@@ -22,21 +22,21 @@
             <div class="product__details__pic">
               <div class="product__details__slider__content">
                 <div class="product__details__pic__slider">
-                  <img v-if="!isLoading && typeof data.image === 'string'" data-hash="product-1" class="product__big__img" v-bind:src="data.image" alt="">
+                  <img v-if="!isLoading" data-hash="product-1" class="product__big__img" :src="typeof data.image === 'string' ? data.image : '/assets/images/no-product-image.svg'" alt="">
                 </div>
               </div>
               <!-- <div class="product__details__pic__left product__thumb nice-scroll">
                 <a class="pt active" href="#product-1">
-                  <img v-if="!isLoading && typeof data.image === 'string'" v-bind:src="data.image" alt="">
+                  <img v-if="!isLoading && typeof data.image === 'string'" :src="data.image" alt="">
                 </a>
               </div>
               <div v-for="(gallery, i) in data.galleries" :key="i" class="product__details__pic__left product__thumb nice-scroll">
                 <a class="pt active" href="#product-1">
-                  <img v-if="!isLoading && typeof data.image === 'string'" v-bind:src="gallery.image" alt="">
+                  <img v-if="!isLoading && typeof data.image === 'string'" :src="gallery.image" alt="">
                 </a>
               </div> -->
             </div>
-            <div class="gallery-thumbnail-wrapper owl-carousel">
+            <div v-if="typeof data.image === 'string' || (data.galleries instanceof Array && data.galleries.length > 0)" class="gallery-thumbnail-wrapper owl-carousel">
               <div class="gallery-thumbnail">
                 <img :src="data.image">
               </div>
@@ -50,8 +50,9 @@
               <dl class="product-detail mb-3">
                 <dd class="product-detail-value">
                   <div v-if="isLoading" class="loading-value" style="height: 26px; width: 280px;"></div>
+                  <div v-if="isLoading" class="loading-value" style="height: 16px; margin-top: 8px; width: 60px;"></div>
                   <h3 v-if="!isLoading" class="product-name">{{data.name}}</h3>
-                  <span v-if="!isLoading">{{data.sold}} terjual</span>
+                  <span v-if="!isLoading" class="product-sold">{{data.sold}} terjual</span>
                 </dd>
               </dl>
               <dl class="product-detail py-4">
@@ -69,7 +70,7 @@
                   <div v-if="isLoading" class="loading-value" style="height: 18px; width: 60px;"></div>
                   <span v-if="!isLoading" class="text">Jumlah</span>
                 </dt>
-                <dd v-if="!isLoading" calss="product-detail-value">
+                <dd calss="product-detail-value">
                   <div v-if="isLoading" class="loading-value" style="height: 32px; width: 160px;"></div>
                   <div v-if="isLoading" class="loading-value mt-2" style="height: 16px; width: 70px;"></div>
                   <div v-if="!isLoading" class="product-quantity-input-wrapper">
@@ -81,7 +82,7 @@
                       <i class="feather icon-plus"></i>
                     </button>
                   </div>
-                  <h6 v-if="!isLoading" class="product-quantity">Tersisa {{data.quantity}}</h6>
+                  <h6 v-if="!isLoading && typeof data.quantity === 'number'" class="product-quantity">Tersisa {{data.quantity}}</h6>
                 </dd>
               </dl>
               <dl class="product-detail py-4 border-top">

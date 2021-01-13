@@ -15,7 +15,7 @@ const store = new Vuex.Store({
     refreshLocationPathname(state) {
       state.locationPathname = document.location.pathname;
     },
-    refreshShoppingCartProducts(state) {
+    refreshShoppingCartProducts(state, {callback}) {
       axios.get('/api/shopping-cart-product')
       .then(response => {
         if (response.data instanceof Object) {
@@ -23,6 +23,10 @@ const store = new Vuex.Store({
 
           if (data instanceof Array) {
             state.shoppingCartProducts = data;
+
+            if (typeof callback === 'function') {
+              callback(response);
+            }
           }
         }
       });

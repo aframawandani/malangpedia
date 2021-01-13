@@ -30,10 +30,9 @@ class ShoppingCartProductController extends Controller
         });
     }
 
-    public function get()
+    public function get(Request $request)
     {
-        global $user;
-
+        $user = $request->user();
         $shopping_cart_product_array =
         Shopping_cart_product
         ::select('shopping_cart_products.shopping_cart_product_id', 'shopping_cart_products.product_id', 'products.name', 'products.price', 'shopping_cart_products.quantity', DB::raw("CONCAT('/assets/images/products/', products.image, '.jpg') AS image"))

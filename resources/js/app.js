@@ -1,27 +1,22 @@
-import Vue from 'vue'
-import VueMeta from 'vue-meta'
-import PortalVue from 'portal-vue'
-import { InertiaApp } from '@inertiajs/inertia-vue'
-import { InertiaProgress } from '@inertiajs/progress/src'
+require('./bootstrap');
 
-Vue.config.productionTip = false
-Vue.mixin({ methods: { route: window.route } })
-Vue.use(InertiaApp)
-Vue.use(PortalVue)
-Vue.use(VueMeta)
+// Import modules...
+import Vue from 'vue';
+import { App as InertiaApp, plugin as InertiaPlugin } from '@inertiajs/inertia-vue';
+import PortalVue from 'portal-vue';
 
-InertiaProgress.init()
+Vue.mixin({ methods: { route } });
+Vue.use(InertiaPlugin);
+Vue.use(PortalVue);
 
-let app = document.getElementById('app')
+const app = document.getElementById('app');
 
 new Vue({
-  metaInfo: {
-    titleTemplate: (title) => (title.length > 0 ? `${title} - ` : '')+'MalangPedia'
-  },
-  render: h => h(InertiaApp, {
-    props: {
-      initialPage: JSON.parse(app.dataset.page),
-      resolveComponent: name => import(`@/Pages/${name}`).then(module => module.default),
-    },
-  }),
-}).$mount(app)
+    render: (h) =>
+        h(InertiaApp, {
+            props: {
+                initialPage: JSON.parse(app.dataset.page),
+                resolveComponent: (name) => require(`./Pages/${name}`).default,
+            },
+        }),
+}).$mount(app);

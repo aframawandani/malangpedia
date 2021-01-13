@@ -94,13 +94,13 @@ input:focus,
 select:focus,
 button:focus,
 textarea:focus {
-	outline: none;
+	outline: none !important;
 }
 
 a:hover,
 a:focus {
 	text-decoration: none;
-	outline: none;
+	outline: none !important;
 }
 
 ul,
@@ -344,35 +344,35 @@ ol {
 	padding: 15px 0;
 }
 
-.header__menu {
+.header-menu {
 	margin-left: 40px;
 }
 
-.header__menu ul li {
+.header-menu ul li {
 	list-style: none;
 	display: inline-block;
 	position: relative;
 }
 
-.header__menu ul li.active a:after {
+.header-menu ul li.active a:after {
 	-webkit-transform: scale(1);
 	-ms-transform: scale(1);
 	transform: scale(1);
 }
 
-.header__menu ul li:hover a:after {
+.header-menu ul li:hover a:after {
 	-webkit-transform: scale(1);
 	-ms-transform: scale(1);
 	transform: scale(1);
 }
 
-.header__menu ul li:hover .dropdown {
+.header-menu ul li:hover .dropdown {
 	top: 50px;
 	opacity: 1;
 	visibility: visible;
 }
 
-.header__menu ul li .dropdown {
+.header-menu ul li .dropdown {
 	position: absolute;
 	left: 0;
 	top: 56px;
@@ -388,12 +388,12 @@ ol {
 	transition: all, 0.3s;
 }
 
-.header__menu ul li .dropdown li {
+.header-menu ul li .dropdown li {
 	display: block;
 	margin-left: 0;
 }
 
-.header__menu ul li .dropdown li a {
+.header-menu ul li .dropdown li a {
 	font-size: 14px;
 	color: #ffffff;
 	font-weight: 400;
@@ -401,11 +401,11 @@ ol {
 	text-transform: capitalize;
 }
 
-.header__menu ul li .dropdown li a:after {
+.header-menu ul li .dropdown li a:after {
 	display: none;
 }
 
-.header__menu ul li a {
+.header-menu ul li a {
 	font-size: 14px;
 	text-transform: uppercase;
 	color: #111111;
@@ -416,7 +416,7 @@ ol {
 	position: relative;
 }
 
-.header__menu ul li a:after {
+.header-menu ul li a:after {
 	/* position: absolute; */
 	left: 0;
 	top: 34px;
@@ -487,6 +487,10 @@ ol {
 	position: relative;
 	text-align: center;
 	width: 50px;
+}
+
+.header__right__widget li a .feather {
+	display: block;
 }
 
 .header__right__widget li a .tip {
@@ -3189,7 +3193,7 @@ ol {
 }
 
 @media only screen and (min-width: 1200px) and (max-width: 1599px) {
-	.header__menu ul li {
+	.header-menu ul li {
 		margin-right: 15px;
 	}
 	.header {
@@ -3206,7 +3210,7 @@ ol {
 /* Medium Device = 1200px */
 
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
-	.header__menu ul li {
+	.header-menu ul li {
 		margin-right: 20px;
 	}
 	.header__right__auth {
@@ -3420,7 +3424,7 @@ ol {
 		content: "/";
 		font-size: 13px;
 	}
-	.header__menu {
+	.header-menu {
 		display: none;
 	}
 	.header__right {
@@ -3588,7 +3592,7 @@ ol {
 		content: "/";
 		font-size: 13px;
 	}
-	.header__menu {
+	.header-menu {
 		display: none;
 	}
 	.header__right {
@@ -3852,6 +3856,8 @@ ol {
 .product-quantity-modifier-button {
 	background-color: #ebebeb;
 	border-radius: 16px;
+	display: flex;
+	height: 32px;
 	padding: 8px;
 }
 
@@ -3859,6 +3865,7 @@ ol {
 	border: 1px solid #ebebeb;
 	border-radius: 16px;
 	font-size: 14px;
+	height: 32px;
 	margin-left: 8px;
 	margin-right: 8px;
 	padding: 6px 12px;
@@ -3883,24 +3890,21 @@ input[type=number] {
 
 .product-add-to-cart-button,
 .product-buy-now-button {
-
+	font-size: 14px;
+	padding: 11px 17px;
+	line-height: 16px;
+	width: 180px;
 }
 
 .product-add-to-cart-button {
 	border: 1px solid #ca1515;
 	color: #ca1515;
-	font-size: 14px;
-	padding: 12px 18px;
-	width: 180px;
 }
 
 .product-buy-now-button {
 	border: 1px solid #ca1515;
 	background-color: #ca1515;
 	color: #ffffff;
-	font-size: 14px;
-	padding: 12px 18px;
-	width: 180px;
 }
 
 .review-content-textarea {
@@ -3913,7 +3917,8 @@ input[type=number] {
 	border: 1px solid #ca1515;
 	color: #ca1515;
 	font-size: 14px;
-	padding: 12px 18px;
+	line-height: 16px;
+	padding: 11px 17px;
 	width: 120px;
 }
 
@@ -3969,4 +3974,12 @@ input[type=number] {
 
 .custom-rating input:checked + label .feather:before {
 	content: '\e90b';
+}
+
+.product-sold {
+	display: inline-block;
+	font-size: 16px;
+	line-height: 16px;
+	margin-top: 8px;
+	vertical-align: bottom;
 }

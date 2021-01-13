@@ -51,7 +51,7 @@
               </div>
               <div v-if="data.length === 0" class="col-lg-12"></div>
               <div v-if="data.length > 0" class="col-lg-12 d-flex justify-content-center">
-                <div class="pagination__option">
+                <div v-if="links instanceof Array && links.length > 0" class="pagination__option">
                   <a v-if="typeof links[0].url === 'string'" :href="links[0].url" @click.prevent="getProducts(currentPage - 1)">
                     <i class="feather icon-chevron-left"></i>
                   </a>

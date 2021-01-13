@@ -1,24 +1,41 @@
 const scripts = {};
 
 export default {
-  include(url) {
-    const script = document.createElement('script');
+  include() {
+    let c = 0;
 
-    const promise = new Promise((resolve, reject) => {
-      script.addEventListener('load', resolve);
-      script.addEventListener('error', reject);
+    return new Promise(resolve => {
+      const l = arguments.length;
+      for (let i = 0; i < l; i++) {
+        const url = arguments[i];
+        const script = document.createElement('script');
+
+        script.src = url;
+
+        script.addEventListener('load', () => {
+          c++;
+
+          if (c === l) {
+            resolve();
+          }
+        });
+
+        scripts[url] = document.head.appendChild(script);
+      }
     });
-
-    script.src = url;
-
-    scripts[url] = document.head.appendChild(script);
-
-    return promise;
   },
-  exclude(url) {
-    delete scripts[url];
+  exclude() {
+    const a = [];
 
-    return url;
+    for (let i = 0; i < this.arguments.length; i++) {
+      const url = this.arguments[i];
+
+      if (delete scripts[url]) {
+        a.push(url);
+      }
+    }
+
+    return a;
   },
   excludeAll() {
     var urls = [];

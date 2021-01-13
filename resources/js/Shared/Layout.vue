@@ -15,7 +15,7 @@
             </div>
           </div>
           <div class="col">
-            <nav class="header__menu">
+            <nav class="header-menu">
               <ul>
                 <li class="active"><inertia-link href="/">Home</inertia-link></li>
                 <li><inertia-link href="/category/komputer-laptop/komputer-desktop">Komputer Desktop</inertia-link></li>
@@ -31,7 +31,7 @@
                   <div class="dropdown" id="shoppingCartProductsDropdown">
                     <inertia-link class="shopping-cart" id="shoppingCartDropdownLink" href="/shopping-cart">
                       <i class="feather icon-shopping-cart"></i>
-                      <div class="tip">{{$store.state.shoppingCartProducts.length}}</div>
+                      <div v-if="$store.state.shoppingCartProducts instanceof Array" class="tip">{{$store.state.shoppingCartProducts.length}}</div>
                     </inertia-link>
                   </div>
                 </li>
@@ -72,6 +72,7 @@ export default {
   data() {
     return {
       isGettingUser: true,
+      isGettingShoppingCartProduct: true,
       user: null,
       shopping_cart_products: []
     };
@@ -88,7 +89,11 @@ export default {
         if (data instanceof Object) {
           this.user = data;
 
-          this.$store.commit('refreshShoppingCartProducts');
+          this.$store.commit('refreshShoppingCartProducts', {
+            callback: response => {
+              this.isGettingShoppingCartProduct = false;
+            }
+          });
         }
       }
     })

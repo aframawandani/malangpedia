@@ -239,7 +239,7 @@ export default {
         data: formData
       })
       .then(response => {
-        // this.$inertia.visit('/admin/product');
+        this.$inertia.visit('/admin/product');
       })
       .catch(error => {
         if (error.response.data instanceof Object)

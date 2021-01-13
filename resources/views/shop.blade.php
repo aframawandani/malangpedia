@@ -1,16 +1,16 @@
-<?php
-$request = request();
-$pathinfo = $request->getPathInfo();
-?>
 <!DOCTYPE html>
-<html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link type="text/css" rel="stylesheet" href="/assets/admin/fonts/feather/css/feather.css">
+    <title>{{config('app.name', 'Laravel')}}</title>
+
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;300;400;600&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;400;600&display=swap" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="/assets/admin/fonts/feather/css/feather.css">
     <link type="text/css" rel="stylesheet" href="/assets/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="/assets/css/font-awesome.min.css">
     <link type="text/css" rel="stylesheet" href="/assets/css/elegant-icons.css">
@@ -20,30 +20,21 @@ $pathinfo = $request->getPathInfo();
     <link type="text/css" rel="stylesheet" href="/assets/css/slicknav.min.css">
     <link type="text/css" rel="stylesheet" href="/assets/css/style.css">
 
-    <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{mix('css/app.css')}}">
 
-    {{-- Inertia --}}
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=smoothscroll,NodeList.prototype.forEach,Promise,Object.values,Object.assign" defer></script>
-
-    {{-- Ping CRM --}}
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=String.prototype.startsWith" defer></script>
-
-    <script src="{{ mix('/js/app.js') }}" defer></script>
     @routes
-</head>
-<body class="font-sans leading-none text-gray-700 antialiased">
-
-@inertia
-
-  <script src="/assets/js/jquery-2.2.5.min.js"></script>
-  <script src="/assets/js/bootstrap.min.js"></script>
-  <script src="/assets/js/jquery.magnific-popup.min.js"></script>
-  <script src="/assets/js/jquery-ui.min.js"></script>
-  <script src="/assets/js/mixitup.min.js"></script>
-  <script src="/assets/js/jquery.countdown.min.js"></script>
-  <script src="/assets/js/jquery.slicknav.js"></script>
-  <script src="/assets/js/owl.carousel.min.js"></script>
-  <script src="/assets/js/jquery.nicescroll.min.js"></script>
-  <script src="/assets/js/main.js"></script>
-</body>
+    <script src="{{mix('js/app.js')}}" defer></script>
+  </head>
+  <body class="font-sans antialiased">
+    @inertia
+    <script src="/assets/js/jquery-2.2.5.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="/assets/js/jquery-ui.min.js"></script>
+    <script src="/assets/js/mixitup.min.js"></script>
+    <script src="/assets/js/jquery.countdown.min.js"></script>
+    <script src="/assets/js/jquery.slicknav.js"></script>
+    <script src="/assets/js/owl.carousel.min.js"></script>
+    <script src="/assets/js/jquery.nicescroll.min.js"></script>
+  </body>
 </html>
