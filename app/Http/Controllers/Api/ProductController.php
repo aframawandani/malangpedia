@@ -13,7 +13,7 @@ use App\Http\Resources\CategoryResource;
 use App\Http\Resources\CategoryCollection;
 use App\Http\Resources\GalleryResource;
 use App\Models\Category;
-use App\Models\Product_2_Category;
+use App\Models\Product_2_category;
 use App\Models\Gallery;
 use App\Models\Order_2_product;
 
