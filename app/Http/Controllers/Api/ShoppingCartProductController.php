@@ -53,8 +53,7 @@ class ShoppingCartProductController extends Controller
 
     public function put(PutRequest $request)
     {
-        global $user;
-
+        $user = $request->user();
         $shopping_cart_product_data = $request->validated();
         $shopping_cart_product_data['user_id'] = $user->id;
         $shopping_cart_product =
@@ -90,8 +89,7 @@ class ShoppingCartProductController extends Controller
 
     public function patch(PatchRequest $request)
     {
-        global $user;
-
+        $user = $request->user();
         $shopping_cart_product_data = $request->validated();
         $product_id = $shopping_cart_product_data['product_id'];
 
@@ -108,10 +106,8 @@ class ShoppingCartProductController extends Controller
 
     public function destroy(DeleteRequest $request)
     {
-        global $user;
-
+        $user = $request->user();
         $shopping_cart_product_data = $request->validated();
-
         $deleted = Shopping_cart_product::where('user_id', $user->id)->whereIn('product_id', $shopping_cart_product_data['product_id'])->delete();
 
         return response()->json(['deleted' => $deleted]);

@@ -354,6 +354,10 @@ ol {
 	position: relative;
 }
 
+.header-menu ul li + li {
+	margin-left: 10px;
+}
+
 .header-menu ul li.active a:after {
 	-webkit-transform: scale(1);
 	-ms-transform: scale(1);

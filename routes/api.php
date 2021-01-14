@@ -60,8 +60,7 @@ Route
 
 Route
 ::get('/newest-products', [ProductController::class, 'getNewestProducts'])
-->name('api.products.newest')
-->middleware('auth');
+->name('api.products.newest');
 
 Route
 ::get('/most-viewed-products', [ProductController::class, 'getMostViewedProducts'])
