@@ -40,6 +40,7 @@
                 <inertia-link v-if="!(user instanceof Object)" href="/auth/login">Login</inertia-link>
                 <inertia-link v-if="!(user instanceof Object)" href="/auth/register">Register</inertia-link>
                 <inertia-link v-if="user instanceof Object" href="/profile">{{user.name}}</inertia-link>
+                <a v-if="user instanceof Object" href="/admin">Dashboard</a>
               </div>
             </div>
           </div>
