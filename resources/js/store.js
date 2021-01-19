@@ -50,7 +50,11 @@ const store = new Vuex.Store({
               state.shoppingCartProducts.push(data);
             }
             else if (response.status === 200) {
-              state.shoppingCartProducts[idx].quantity = data.quantity;
+              const shoppingCartProduct = state.shoppingCartProducts.find(shoppingCartProduct => {
+                shoppingCartProduct.product_id = data.product_id;
+              });
+
+              shoppingCartProduct.quantity = data.quantity;
             }
           }
         }
@@ -58,11 +62,11 @@ const store = new Vuex.Store({
         return response;
       })
       .catch(error => {
-        if (error.response.status === 401) {
-          Inertia.visit('/auth/login');
-        }
+        // if (error.response.status === 401) {
+        //   Inertia.visit('/auth/login');
+        // }
 
-        return error;
+        // return error;
       });
 
       if (typeof callback === 'function')

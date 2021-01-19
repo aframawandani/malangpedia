@@ -164,8 +164,8 @@ export default {
               });
 
               $(tr).find('.btn-delete').on('click', () => {
-                deleteFormModal.date.product_id = [date.product_id];
-                deleteFormModal.date.name = date.name;
+                deleteFormModal.data.product_id = [data.product_id];
+                deleteFormModal.data.name = data.name;
 
                 $deleteFormModal.modal('show');
               });
