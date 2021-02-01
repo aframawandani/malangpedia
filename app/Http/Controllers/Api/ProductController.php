@@ -33,7 +33,7 @@ class ProductController extends Controller
     {
         $product =
         Product
-        ::select('products.product_id', 'products.name', 'products.description', 'products.price', 'products.quantity', DB::raw("CONCAT('/assets/images/products/', products.image, '.jpg') AS image"), DB::raw("CONCAT('/product/', products.slug) as url"))
+        ::select('products.product_id', 'products.name', 'products.description', 'products.price', 'products.quantity', DB::raw('products.rating_quality / products.rating_quantity AS rating'), DB::raw("CONCAT('/assets/images/products/', products.image, '.jpg') AS image"), DB::raw("CONCAT('/product/', products.slug) as url"))
         ->where('products.slug', $product_slug)
         ->get()
         ->first();

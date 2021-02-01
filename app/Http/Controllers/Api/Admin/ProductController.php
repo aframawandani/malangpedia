@@ -15,6 +15,7 @@ use App\Http\Resources\Admin\ProductResource;
 use App\Models\Product;
 use App\Models\Order_2_product;
 use App\Models\Product_2_category;
+use App\Models\Product_2_gallery;
 use App\Models\Gallery;
 
 class ProductController extends Controller
@@ -63,20 +64,21 @@ class ProductController extends Controller
         ->first();
         $product_2_category_array =
         Product_2_category
-        ::select('categories.category_id')
+        ::select('product_2_categories.product_2_category_id', 'product_2_categories.category_id')
         ->where('product_2_categories.product_id', $product->product_id)
         ->leftJoin('categories', 'categories.category_id', '=', 'product_2_categories.category_id')
-        ->orderBy('number_of_descendant', 'DESC')
+        ->orderBy('categories.number_of_descendant', 'DESC')
         ->get()
         ->all();
-        $category_id_array = [];
+        $gallery_array =
+        Gallery
+        ::select('gallery_id', DB::raw("CONCAT('/assets/images/galleries/', image, '.jpg') AS image"))
+        ->where('product_id', $product->product_id)
+        ->get()
+        ->all();
 
-        foreach ($product_2_category_array AS $product_2_category)
-        {
-            array_push($category_id_array, $product_2_category->category_id);
-        }
-
-        $product->setRelation('category_id', $category_id_array);
+        $product->setRelation('categories', $product_2_category_array);
+        $product->setRelation('galleries', $gallery_array);
 
         return new ProductResource($product);
     }
@@ -86,7 +88,7 @@ class ProductController extends Controller
         $user = $request->user();
         $product_data = $request->validated();
         $product_data['owner_user_id'] = $user->id;
-        $product_gallery_array = $request->file('gallery');
+        $product_gallery_array = $request->file('gallery') ?? [];
         $category_id_array = $product_data['category_ids'];
 
         unset($product_data['image']);
@@ -156,6 +158,11 @@ class ProductController extends Controller
         $product = Product::where('product_id', $product_data['product_id'])->get()->first();
         $product_data_image = @$request->file('image');
         $product_data_image_size = @$_FILES['image']['size'];
+        $product_2_category_insert_data_array = @$product_data['categories']['insert'] ?? [];
+        $product_2_category_update_data_array = @$product_data['categories']['update'] ?? [];
+        $product_2_category_delete_data_array = @$product_data['categories']['delete'] ?? [];
+
+        unset($product_data['categories']);
 
         foreach ($product_data AS $name => $value)
         {
@@ -208,17 +215,28 @@ class ProductController extends Controller
             }
         }
 
-        $updated = Product::where('product_id', $product_data['product_id'])->update($product_data);
+        Product::where('product_id', $product_data['product_id'])->update($product_data);
 
-        foreach (@$product_data['category'] ?? [] AS $category_id)
+        foreach ($product_2_category_insert_data_array AS $category_id)
         {
             Product_2_category::create([
                 'product_id' => $product_data['product_id'],
-                'category_id' => $category_id
+                'category_id' => $category_id,
             ]);
         }
 
-        return response()->json(['updated' => $updated]);
+        foreach ($product_2_category_update_data_array AS $product_2_category_update_data)
+        {
+            $product_2_category_id = $product_2_category_update_data['product_2_category_id'];
+
+            unset($product_2_category_update_data['product_2_category_id']);
+
+            Product_2_category::where('product_2_category_id', $product_2_category_id)->update($product_2_category_update_data);
+        }
+
+        Product_2_category::whereIn('product_2_category_id', $product_2_category_delete_data_array)->delete();
+
+        return response()->json(['updated' => 1]);
     }
 
     public function destroy(DeleteRequest $request)

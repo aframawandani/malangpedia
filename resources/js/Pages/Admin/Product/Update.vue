@@ -24,9 +24,9 @@
           <div class="box box-solid d-flex flex-column">
             <div class="box-body">
               <div class="product__gallery">
-                <div v-for="(gallery, i) in meta.gallery" :key="i" class="product__gallery__list">
+                <div v-for="(gallery, i) in meta.galleries" :key="i" class="product__gallery__list">
                   <img class="product__gallery__image" :src="gallery.src">
-                  <button class="product__gallery__remove__button" @click="(i => () => {removeProdyctGallery(i)})(i)">
+                  <button class="product__gallery__remove__button" @click="(i => () => {removeProductGallery(i)})(i)">
                     <i class="feather icon-trash"></i>
                   </button>
                 </div>
@@ -99,12 +99,12 @@
                 <div v-for="(error, i) in errors.slug" :key="i" class="help-block">{{error}}</div>
               </div>
               <div :class="`form-group${errors.quantity instanceof Array ? ' has-error' : ''}`">
-                <label>Jumlah</label>
-                <input class="form-control" id="hargaInput" type="number" form="updateForm" name="quantity" v-model="input.quantity">
+                <label for="jumlahInput">Jumlah</label>
+                <input class="form-control" id="jumlahInput" type="number" form="updateForm" name="quantity" v-model="input.quantity">
                 <div v-for="(error, i) in errors.quantity" :key="i" class="help-block">{{error}}</div>
               </div>
               <div :class="`form-group${errors.price instanceof Array ? ' has-error' : ''}`">
-                <label>Harga</label>
+                <label for="hargaInput">Harga</label>
                 <input class="form-control" id="hargaInput" type="number" form="updateForm" name="price" v-model="input.price">
                 <div v-for="(error, i) in errors.price" :key="i" class="help-block">{{error}}</div>
               </div>
@@ -115,7 +115,7 @@
               <h1 class="box-title">Kategori</h1>
             </div>
             <div class="box-body" style="max-height: 200px;">
-              <category-checkbox v-for="(category, i) in categories" :key="i" :category="category" :checkedCategories="meta.checkedCategories" />
+              <category-checkbox v-for="(category, i) in categories" :key="i" :category="category" :checkedCategories="meta.checkedCategories" ref="categoryCheckbox" />
             </div>
           </div>
         </div>
@@ -140,7 +140,7 @@ import scripts from '@/scripts';
 import Layout from '@/Shared/Admin/Layout';
 import CategoryCheckbox from './Components/CategoryCheckbox';
 
-let $productGallery;
+let $productGallery, checkedCategoriesCount;
 
 export default {
   components: {
@@ -148,7 +148,7 @@ export default {
   },
   layout: Layout,
   props: {
-    productId: String
+    productId: Number
   },
   data() {
     return {
@@ -162,12 +162,22 @@ export default {
         slug: null,
         price: null,
         quantity: null,
-        gallery: []
+        galleries: {
+          insert: [],
+          udpate: [],
+          delete: [],
+        },
+        categories: {
+          insert: [],
+          update: [],
+          delete: [],
+        },
       },
       meta: {
         image: null,
-        gallery: [],
-        checkedCategories: {}
+        galleries: [],
+        checkedCategories: {},
+        galleriesCount: 0,
       },
       categories: []
     };
@@ -184,8 +194,19 @@ export default {
         reader.readAsDataURL(file);
       });
     },
-    removeProdyctGallery(i) {
-      this.meta.gallery.splice(i, 1);
+    removeProductGallery(i) {
+      this.meta.galleries.splice(i, 1);
+
+      if (i < this.galleriesCount - 1) {
+        const gallery = this.input.galleries.update.splice(i, 1);
+
+        if (this.input.galleries.insert.length > 0) {
+          gallery.image = true;
+        }
+        else {
+          this.input.galleries.delete.push(gallery.gallery_id);
+        }
+      }
     },
     galleryFileInputOnChange(event) {
       const input = event.target;
@@ -194,7 +215,7 @@ export default {
         const reader = new FileReader();
 
         reader.onload = event => {
-          this.meta.gallery.push({
+          this.meta.galleries.push({
             src: event.currentTarget.result
           });
 
@@ -202,7 +223,13 @@ export default {
             input.removeEventListener('change', this.galleryFileInputOnChange);
             input.removeAttribute('id');
 
-            input.name = 'gallery[]';
+            console.log(this.input.galleries.update);
+
+            const command = this.input.galleries.update.length < this.galleriesCount ? 'update' : 'insert';
+            const i = command === 'update' ? this.input.galleries.update.length : this.input.galleries.insert.length;
+            console.log(`galleries[${command}][${i}]`);
+
+            input.name = `galleries[${command}][${i}]`;
 
             input.setAttribute('form', 'updateForm');
 
@@ -210,8 +237,8 @@ export default {
 
             $input[0].addEventListener('change', this.galleryFileInputOnChange);
 
-            $('.product__gallery').children().eq(this.meta.gallery.length - 1).append(input);
-            $('.product__gallery').children().eq(this.meta.gallery.length).children().append($input);
+            $('.product__gallery').children().eq(this.meta.galleries.length - 1).append(input);
+            $('.product__gallery').children().eq(this.meta.galleries.length).children().append($input);
           });
         }
 
@@ -228,9 +255,28 @@ export default {
 
       const formData = new FormData(event.target);
 
-      formData.append('_method', 'PUT');
-      formData.append('product_id', this.data.product_id);
+      formData.append('_method', 'PATCH');
+      formData.append('product_id', this.productId);
       formData.set('description', CKEDITOR.instances.descriptionTextarea.getData());
+
+      if (this.input.categories.insert.length > 0) {
+        this.input.categories.insert.forEach(category_id => {
+          formData.set('categories[insert][]', category_id);
+        });
+      }
+
+      if (this.input.categories.update.length > 0) {
+        this.input.categories.update.forEach((category, i) => {
+          formData.set(`categories[update][${i}][product_2_category_id]`, category.product_2_category_id);
+          formData.set(`categories[update][${i}][category_id]`, category.category_id);
+        });
+      }
+
+      if (this.input.categories.delete.length > 0) {
+        this.input.categories.delete.forEach(product_2_category_id => {
+          formData.set('categories[delete][]', product_2_category_id);
+        });
+      }
 
       if (this.data.image === this.meta.image) {
         formData.delete('image');
@@ -241,7 +287,7 @@ export default {
         url: '/api/admin/product',
         data: formData
       })
-      .then(response => {
+      .then(() => {
         // this.$inertia.visit('/admin/product');
       })
       .catch(error => {
@@ -269,14 +315,93 @@ export default {
           this.input.slug = slugify(event.currentTarget.value.toLowerCase());
         });
 
-        CKEDITOR.replace('descriptionTextarea');
-
-        axios.get('/api/category').then(response => {
+        axios.get(`/api/admin/product/detail/${this.productId}`).then(response => {
           if (response.data instanceof Object) {
             const data = response.data.data;
 
+            checkedCategoriesCount = data.categories.length;
+
             if (data instanceof Object) {
-              this.categories = data;
+              this.input.name = data.name;
+              this.input.slug = data.slug;
+              this.input.description = data.description;
+              this.input.image = null;
+              this.input.quantity = data.quantity;
+              this.input.price = data.price;
+              this.input.categories.update = data.categories;
+
+              this.meta.image = data.image;
+              this.data.image = data.image;
+
+              data.categories.forEach(category => {
+                this.meta.checkedCategories[category.category_id] = category.product_2_category_id;
+              });
+
+              data.galleries.forEach(gallery => {
+                // this.input.galleries.update.push({
+                //   gallery_id: gallery.gallery_id,
+                // });
+                this.meta.galleries.push({
+                  src: gallery.image,
+                });
+              });
+
+              this.galleriesCount = data.galleries.length;
+
+              axios.get('/api/category').then(response => {
+                if (response.data instanceof Object) {
+                  const data = response.data.data;
+
+                  if (data instanceof Object) {
+                    this.categories = data;
+
+                    setTimeout(() => {
+                      Array.prototype.forEach.call(document.forms['updateForm'].elements['categories[]'], category => {
+                        category.addEventListener('change', event => {
+                          const category_id = parseInt(event.target.value);
+
+                          if (event.target.checked) {
+                            if (this.input.categories.update.length < checkedCategoriesCount) {
+                              const product_2_category_id = this.input.categories.delete.pop();
+
+                              this.input.categories.update.push({
+                                product_2_category_id,
+                                category_id,
+                              });
+                            }
+                            else {
+                              this.input.categories.insert.push(category_id);
+                            }
+                          }
+                          else {
+                            const i = this.input.categories.insert.indexOf(category_id);
+                            const j = this.input.categories.update.findIndex(category => {
+                              return category.category_id === category_id;
+                            });
+
+                            if (i > -1) {
+                              this.input.categories.insert.splice(i);
+                            }
+                            else if (j > -1) {
+                              const category = this.input.categories.update.splice(j, 1)[0];
+
+                              if (this.input.categories.insert.length > 0) {
+                                category.category_id = this.input.categories.insert.shift();
+                                this.input.categories.update[checkedCategoriesCount - 1] = category;
+                              }
+                              else {
+                                this.input.categories.delete.push(category.product_2_category_id);
+                              }
+                            }
+                          }
+                        });
+                      });
+                    });
+                  }
+                }
+              });
+
+              CKEDITOR.replace('descriptionTextarea');
             }
           }
         });

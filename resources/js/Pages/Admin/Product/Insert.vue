@@ -115,7 +115,7 @@
               <h1 class="box-title">Kategori</h1>
             </div>
             <div class="box-body" style="max-height: 200px;">
-              <category-checkbox v-for="(category, i) in categories" :key="i" :category="category" :checkedCategories="meta.checkedCategories" />
+              <category-checkbox v-for="(category, i) in categories" :key="i" form="insertForm" :category="category" :checkedCategories="meta.checkedCategories" />
             </div>
           </div>
         </div>
@@ -159,14 +159,15 @@ export default {
         slug: null,
         price: null,
         quantity: null,
-        gallery: []
+        categories: [],
+        gallery: [],
       },
       meta: {
         image: null,
         gallery: [],
         checkedCategories: {}
       },
-      categories: []
+      categories: [],
     };
   },
   methods: {
@@ -226,7 +227,11 @@ export default {
       const formData = new FormData(event.target);
 
       formData.append('_method', 'PUT');
-      formData.append('product_id', this.data.product_id);
+
+      Array.prototype.filter.call(document.forms['insertForm'].elements['categories[]'], input => input.checked).map(input => input.value).forEach(category_id => {
+        formData.append('category_ids[]', category_id);
+      });
+
       formData.set('description', CKEDITOR.instances.descriptionTextarea.getData());
 
       if (this.data.image === this.meta.image) {

@@ -696,6 +696,7 @@ div.dataTables_filter input {
 
 .product__gallery__remove__button {
   background-color: #e53e3e;
+  border: none;
   border-radius: 50%;
   color: #ffffff;
   display: flex;

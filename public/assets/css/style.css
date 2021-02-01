@@ -506,7 +506,7 @@ ol {
 	width: 18px;
 	background: #111111;
 	font-size: 11px;
-	font-weight: 500;
+	font-weight: 600;
 	color: #ffffff;
 	line-height: 18px;
 	text-align: center;
@@ -1646,6 +1646,15 @@ ol {
   Product Details
 -----------------------*/
 
+.product-quick-details {
+	align-items: center;
+	display: flex;
+}
+
+.product-rating {
+	display: flex;
+}
+
 .product-details {
 	padding-top: 70px;
 	padding-bottom: 50px;
@@ -1789,7 +1798,9 @@ ol {
 }
 
 .pro-qty .qtybtn {
+	background-color: transparent;
 	font-size: 14px;
+	border: none;
 	color: #666666;
 	cursor: pointer;
 	float: left;
@@ -2028,9 +2039,6 @@ ol {
 
 .nav {
 	border-bottom: none;
-	-webkit-box-pack: center;
-	-ms-flex-pack: center;
-	justify-content: center;
 	position: relative;
 	margin-bottom: 40px;
 }
@@ -2040,7 +2048,7 @@ ol {
 	line-height: 24px;
 	position: absolute;
 	left: 0;
-	top: 43px;
+	top: 46px;
 	height: 1px;
 	width: 100%;
 	background: #ebebeb;
@@ -2049,21 +2057,18 @@ ol {
 }
 
 .nav-item + .nav-item {
-	margin-left: 20px;
+	margin-left: 10px;
 }
 
 .nav-item .nav-link {
+	background-color: #ffffff;
 	border: 1px solid #ebebeb;
 	color: #111111;
-	font-size: 18px;
-	color: #666666;
+	font-size: 14px;
 	font-weight: 600;
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
 	padding: 12px 18px;
-}
-
-.nav-item .nav-link.active {
 }
 
 .tab-content .tab-pane h6 {
@@ -2229,6 +2234,7 @@ ol {
 }
 
 .cart__btn button {
+	border: none;
 	font-size: 14px;
 	color: #111111;
 	font-weight: 600;
@@ -3786,6 +3792,11 @@ ol {
 #descriptionTab table {
 	border-collapse: separate;
 	border-spacing: 0 10px;
+	border: none;
+}
+
+#descriptionTab table > tbody > tr > td {
+	border: none;
 }
 
 .gallery-thumbnail-wrapper {
@@ -3860,6 +3871,7 @@ ol {
 
 .product-quantity-modifier-button {
 	background-color: #ebebeb;
+	border: none;
 	border-radius: 16px;
 	display: flex;
 	height: 32px;
@@ -3902,6 +3914,7 @@ input[type=number] {
 }
 
 .product-add-to-cart-button {
+	background-color: #ffffff;
 	border: 1px solid #ca1515;
 	color: #ca1515;
 }
@@ -3919,6 +3932,7 @@ input[type=number] {
 }
 
 .review-submit-button {
+	background-color: #ffffff;
 	border: 1px solid #ca1515;
 	color: #ca1515;
 	font-size: 14px;
@@ -3966,15 +3980,25 @@ input[type=number] {
 
 .custom-rating {
 	display: flex;
+	align-items: center;
 }
 
 .custom-rating input {
 	height: 0;
 	position: absolute;
-	top: 0;
-	left: 0;
 	width: 0;
 	z-index: -1;
+}
+
+.custom-rating-label {
+	cursor: pointer;
+	display: inline-block;
+	margin-bottom: 0;
+	line-height: 16px;
+}
+
+.custom-rating-label > .feather {
+	display: block;
 }
 
 .custom-rating input:checked + label .feather:before {
@@ -3985,6 +4009,24 @@ input[type=number] {
 	display: inline-block;
 	font-size: 16px;
 	line-height: 16px;
-	margin-top: 8px;
+	margin-left: 10px;
 	vertical-align: bottom;
+}
+
+.rating-star-wrapper {
+	position: relative;
+	display: flex;
+}
+
+.rating-star {
+	color: #fdcc0d;
+}
+
+.rating-star-on {
+	display: block;
+	color: #fdcc0d;
+	left: 0;
+	position: absolute;
+	top: 0;
+	overflow: hidden;
 }

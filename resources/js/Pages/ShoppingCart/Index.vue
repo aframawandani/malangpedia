@@ -34,11 +34,11 @@
                       <div class="cart__product__item__title">
                         <h6>{{shopping_cart_product.name}}</h6>
                         <div class="rating">
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
+                          <i class="rating-star fa fa-star"></i>
+                          <i class="rating-star fa fa-star"></i>
+                          <i class="rating-star fa fa-star"></i>
+                          <i class="rating-star fa fa-star"></i>
+                          <i class="rating-star fa fa-star"></i>
                         </div>
                       </div>
                     </td>

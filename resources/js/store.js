@@ -62,11 +62,7 @@ const store = new Vuex.Store({
         return response;
       })
       .catch(error => {
-        // if (error.response.status === 401) {
-        //   Inertia.visit('/auth/login');
-        // }
-
-        // return error;
+        return error;
       });
 
       if (typeof callback === 'function')

@@ -53,7 +53,8 @@ class PatchRequest extends FormRequest
                 return false;
             }),
             'quantity' => 'nullable|numeric|min:0',
-            'price' => 'nullable|numeric|min:0'
+            'price' => 'nullable|numeric|min:0',
+            'categories' => 'required|array',
         ];
     }
 
@@ -70,7 +71,9 @@ class PatchRequest extends FormRequest
             'quantity.numeric' => 'Jumlah harus berupa angka positif atau nol',
             'quantity.min' => 'Jumlah harus berupa angka positif atau nol',
             'price.numeric' => 'Harga harus berupa angka positif atau nol',
-            'price.min' => 'Harga harus berupa angka positif atau nol'
+            'price.min' => 'Harga harus berupa angka positif atau nol',
+            'categories.required' => 'Kategori harus diisi',
+            'categories.array' => 'Kategori harus berupa array',
         ];
     }
 
