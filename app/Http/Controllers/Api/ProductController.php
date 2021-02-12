@@ -16,6 +16,7 @@ use App\Models\Category;
 use App\Models\Product_2_category;
 use App\Models\Gallery;
 use App\Models\Order_2_product;
+use App\Models\Review;
 
 class ProductController extends Controller
 {
@@ -31,9 +32,10 @@ class ProductController extends Controller
 
     public function getDetail(Request $request, $product_slug)
     {
+        $user = $request->user();
         $product =
         Product
-        ::select('products.product_id', 'products.name', 'products.description', 'products.price', 'products.quantity', DB::raw('products.rating_quality / products.rating_quantity AS rating'), DB::raw("CONCAT('/assets/images/products/', products.image, '.jpg') AS image"), DB::raw("CONCAT('/product/', products.slug) as url"))
+        ::select('products.product_id', 'products.name', 'products.description', 'products.price', 'products.quantity', DB::raw('products.rating_quality / products.rating_quantity AS rating'), 'products.rating_quantity', DB::raw("CONCAT('/assets/images/products/', products.image, '.jpg') AS image"), DB::raw("CONCAT('/product/', products.slug) as url"))
         ->where('products.slug', $product_slug)
         ->get()
         ->first();
@@ -70,8 +72,16 @@ class ProductController extends Controller
 
         $gallery_array = Gallery::select(DB::raw("CONCAT('/assets/images/galleries/', image, '.jpg') AS image"))->where('product_id', $product->product_id)->get()->all();
         $gallery_collection = GalleryResource::collection($gallery_array);
+        $review =
+        Review
+        ::select('content', 'rating')
+        ->where('product_id', $product->product_id)
+        ->where('user_id', @$user->id ?? 0)
+        ->get()
+        ->first();
 
         $product->setRelation('galleries', $gallery_collection->collection);
+        $product->setRelation('user_review', $review);
 
         return new ProductResource($product);
     }

@@ -24,8 +24,10 @@ class ProductResource extends JsonResource
             'url' => $this->url,
             'image' => $this->image,
             'rating' => is_numeric($this->rating) ? floatval($this->rating) : null,
+            'rating_quantity' => $this->rating_quantity,
             'categories' => $this->categories,
-            'galleries' => $this->galleries
+            'galleries' => $this->galleries,
+            'user_review' => $this->user_review,
         ];
     }
 }

@@ -115,7 +115,7 @@
               <h1 class="box-title">Kategori</h1>
             </div>
             <div class="box-body" style="max-height: 200px;">
-              <category-checkbox v-for="(category, i) in categories" :key="i" :category="category" :checkedCategories="meta.checkedCategories" ref="categoryCheckbox" />
+              <category-checkbox v-for="(category, i) in categories" :key="i" :category="category" :checkedCategories="meta.checkedCategories" form="updateForm" ref="categoryCheckbox" />
             </div>
           </div>
         </div>
@@ -140,7 +140,7 @@ import scripts from '@/scripts';
 import Layout from '@/Shared/Admin/Layout';
 import CategoryCheckbox from './Components/CategoryCheckbox';
 
-let $productGallery, checkedCategoriesCount;
+let $productGallery, checkedCategoriesCount, galleriesCount;
 
 export default {
   components: {
@@ -164,7 +164,6 @@ export default {
         quantity: null,
         galleries: {
           insert: [],
-          udpate: [],
           delete: [],
         },
         categories: {
@@ -177,7 +176,6 @@ export default {
         image: null,
         galleries: [],
         checkedCategories: {},
-        galleriesCount: 0,
       },
       categories: []
     };
@@ -195,17 +193,12 @@ export default {
       });
     },
     removeProductGallery(i) {
-      this.meta.galleries.splice(i, 1);
+      const gallery = this.meta.galleries.splice(i, 1)[0];
 
-      if (i < this.galleriesCount - 1) {
-        const gallery = this.input.galleries.update.splice(i, 1);
+      if (i < galleriesCount) {
+        this.input.galleries.delete.push(gallery.gallery_id);
 
-        if (this.input.galleries.insert.length > 0) {
-          gallery.image = true;
-        }
-        else {
-          this.input.galleries.delete.push(gallery.gallery_id);
-        }
+        galleriesCount--;
       }
     },
     galleryFileInputOnChange(event) {
@@ -223,13 +216,7 @@ export default {
             input.removeEventListener('change', this.galleryFileInputOnChange);
             input.removeAttribute('id');
 
-            console.log(this.input.galleries.update);
-
-            const command = this.input.galleries.update.length < this.galleriesCount ? 'update' : 'insert';
-            const i = command === 'update' ? this.input.galleries.update.length : this.input.galleries.insert.length;
-            console.log(`galleries[${command}][${i}]`);
-
-            input.name = `galleries[${command}][${i}]`;
+            input.name = `galleries[insert][]`;
 
             input.setAttribute('form', 'updateForm');
 
@@ -257,6 +244,7 @@ export default {
 
       formData.append('_method', 'PATCH');
       formData.append('product_id', this.productId);
+      formData.delete('categories[]');
       formData.set('description', CKEDITOR.instances.descriptionTextarea.getData());
 
       if (this.input.categories.insert.length > 0) {
@@ -278,6 +266,12 @@ export default {
         });
       }
 
+      if (this.input.galleries.delete.length > 0) {
+        this.input.galleries.delete.forEach(gallery_id => {
+          formData.set('galleries[delete][]', gallery_id);
+        });
+      }
+
       if (this.data.image === this.meta.image) {
         formData.delete('image');
       }
@@ -288,7 +282,7 @@ export default {
         data: formData
       })
       .then(() => {
-        // this.$inertia.visit('/admin/product');
+        this.$inertia.visit('/admin/product');
       })
       .catch(error => {
         if (error.response.data instanceof Object)
@@ -338,15 +332,13 @@ export default {
               });
 
               data.galleries.forEach(gallery => {
-                // this.input.galleries.update.push({
-                //   gallery_id: gallery.gallery_id,
-                // });
                 this.meta.galleries.push({
+                  gallery_id: gallery.gallery_id,
                   src: gallery.image,
                 });
               });
 
-              this.galleriesCount = data.galleries.length;
+              galleriesCount = data.galleries.length;
 
               axios.get('/api/category').then(response => {
                 if (response.data instanceof Object) {

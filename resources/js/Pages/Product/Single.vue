@@ -4,7 +4,7 @@
       <div class="container">
          <div class="row">
           <div class="col-lg-12">
-            <div v-if="isLoading" class="loading-value" style="height: 16px;"></div>
+            <div v-if="isLoading" class="loading-value" style="height: 16px; width: 40%;"></div>
             <div v-if="!isLoading" class="breadcrumb__links">
               <inertia-link href="/"><i class="fa fa-home"></i> Home</inertia-link>
               <inertia-link v-for="(category, i) in data.categories" :key="i" :href="category.url">{{category.name}}</inertia-link>
@@ -25,18 +25,8 @@
                   <img v-if="!isLoading" data-hash="product-1" class="product__big__img" :src="typeof data.image === 'string' ? data.image : '/assets/images/no-product-image.svg'" alt="">
                 </div>
               </div>
-              <div class="product__details__pic__left product__thumb nice-scroll">
-                <a class="pt active" href="#product-1">
-                  <img v-if="!isLoading && typeof data.image === 'string'" :src="data.image" alt="">
-                </a>
-              </div>
-              <div v-for="(gallery, i) in data.galleries" :key="i" class="product__details__pic__left product__thumb nice-scroll">
-                <a class="pt active" href="#product-1">
-                  <img v-if="!isLoading && typeof data.image === 'string'" :src="gallery.image" alt="">
-                </a>
-              </div>
             </div>
-            <div v-if="typeof data.image === 'string' || (data.galleries instanceof Array && data.galleries.length > 0)" class="gallery-thumbnail-wrapper owl-carousel">
+            <div v-if="typeof data.image === 'string' || (data.galleries instanceof Array && data.galleries.length > 0)" class="gallery-thumbnail-wrapper owl-carousel test">
               <div class="gallery-thumbnail">
                 <img :src="data.image">
               </div>
@@ -50,7 +40,10 @@
               <dl class="product-detail mb-3">
                 <dd class="product-detail-value">
                   <div v-if="isLoading" class="loading-value" style="height: 26px; width: 280px;"></div>
-                  <div v-if="isLoading" class="loading-value" style="height: 16px; margin-top: 8px; width: 60px;"></div>
+                  <div class="d-flex mt-2">
+                    <div v-if="isLoading" class="loading-value" style="height: 16px; width: 80px;"></div>
+                    <div v-if="isLoading" class="loading-value" style="height: 16px; margin-left: 10px; width: 54px;"></div>
+                  </div>
                   <h3 v-if="!isLoading" class="product-name">{{data.name}}</h3>
                   <div class="product-quick-details">
                     <div v-if="!isLoading" class="product-rating">
@@ -143,49 +136,44 @@
                   <p v-if="!isLoading" v-html="data.description"></p>
                 </div>
                 <div class="tab-pane" id="reviewTab" role="tabpanel">
-                  <h6>Review</h6>
-                  <form>
-                    <div class="form-group">
-                      <div class="custom-rating">
-                        <div class="star">
-                          <input class="custom-rating-input" id="star1" type="radio" name="rating" value="1" @input="ratingStarInputOnChange">
-                          <label class="custom-rating-label" for="star1">
-                            <i :class="`rating-star feather icon-star${input.rating >= 1 ? '-on' : ''}`"></i>
-                          </label>
+                  <div class="d-flex align-item">
+                    <div class="d-table">
+                      <div class="rating-score">
+                        <div v-if="isLoading" class="loading-value" style="height: 64px; margin: 0 auto; width: 80px;"></div>
+                        <span v-if="!isLoading">{{typeof data.rating === 'number' ? Math.round(data.rating * 10) / 10 : '?'}}</span>
+                      </div>
+                      <div v-if="isLoading" class="loading-value" style="height: 24px; margin-top: 8px; width: 120px;"></div>
+                      <div v-if="isLoading" class="loading-value" style="height: 24px; margin: 8px auto 0 auto; width: 64px;"></div>
+                      <div v-if="!isLoading" class="d-flex mt-2">
+                        <div class="rating-star-wrapper">
+                          <i class="rating-star-big feather icon-star"></i>
+                          <i class="rating-star-on-big feather icon-star-on" :style="`width: ${Math.min(Math.max(data.rating, 0), 1) * 100}%;`"></i>
                         </div>
-                        <div class="star">
-                          <input class="custom-rating-input" id="star2" type="radio" name="rating" value="2" @input="ratingStarInputOnChange">
-                          <label class="custom-rating-label" for="star2">
-                            <i :class="`rating-star feather icon-star${input.rating >= 2 ? '-on' : ''}`"></i>
-                          </label>
+                        <div class="rating-star-wrapper">
+                          <i class="rating-star-big feather icon-star"></i>
+                          <i class="rating-star-on-big feather icon-star-on" :style="`width: ${Math.min(Math.max(data.rating - 1, 0), 1) * 100}%;`"></i>
                         </div>
-                        <div class="star">
-                          <input class="custom-rating-input" id="star3" type="radio" name="rating" value="3" @input="ratingStarInputOnChange">
-                          <label class="custom-rating-label" for="star3">
-                            <i :class="`rating-star feather icon-star${input.rating >= 3 ? '-on' : ''}`"></i>
-                          </label>
+                        <div class="rating-star-wrapper">
+                          <i class="rating-star-big feather icon-star"></i>
+                          <i class="rating-star-on-big feather icon-star-on" :style="`width: ${Math.min(Math.max(data.rating - 2, 0), 1) * 100}%;`"></i>
                         </div>
-                        <div class="star">
-                          <input class="custom-rating-input" id="star4" type="radio" name="rating" value="4" @input="ratingStarInputOnChange">
-                          <label class="custom-rating-label" for="star4">
-                            <i :class="`rating-star feather icon-star${input.rating >= 4 ? '-on' : ''}`"></i>
-                          </label>
+                        <div class="rating-star-wrapper">
+                          <i class="rating-star-big feather icon-star"></i>
+                          <i class="rating-star-on-big feather icon-star-on" :style="`width: ${Math.min(Math.max(data.rating - 3, 0), 1) * 100}%;`"></i>
                         </div>
-                        <div class="star">
-                          <input class="custom-rating-input" id="star5" type="radio" name="rating" value="5" @input="ratingStarInputOnChange">
-                          <label class="custom-rating-label" for="star5">
-                            <i :class="`rating-star feather icon-star${input.rating >= 5 ? '-on' : ''}`"></i>
-                          </label>
+                        <div class="rating-star-wrapper">
+                          <i class="rating-star-big feather icon-star"></i>
+                          <i class="rating-star-on-big feather icon-star-on" :style="`width: ${Math.min(Math.max(data.rating - 4, 0), 1) * 100}%;`"></i>
                         </div>
                       </div>
+                      <div v-if="!isLoading" class="d-flex align-items-center justify-content-center mt-1">
+                        <i class="feather icon-user"></i>
+                        <span class="text d-block ml-1">{{data.rating_quantity}} User</span>
+                      </div>
                     </div>
-                    <div class="form-group">
-                      <textarea class="review-content-textarea" rows="5" placeholder="Tulis review"></textarea>
-                    </div>
-                    <div class="d-flex justify-content-end">
-                      <button class="review-submit-button">Submit</button>
-                    </div>
-                  </form>
+                    <button v-if="isUserLoggedIn" class="write-review-button" @click="showWriteOrEditReviewModal">{{data.user_review instanceof Object ? 'Edit' : 'Tulis'}} Review</button>
+                  </div>
+                  <review-section :product-slug="productSlug" />
                 </div>
               </div>
             </div>
@@ -205,6 +193,7 @@
         </div>
       </div>
     </div>
+    <write-or-edit-review-modal v-if="isUserLoggedIn" :product="data" ref="writeOrEditReviewModal" @writereviewsuccess="onWriteReviewSuccess" />
   </div>
 </template>
 
@@ -212,12 +201,12 @@
 import Vue from 'vue';
 import axios from 'axios';
 import scripts from '@/scripts';
-import Layout from '@/Shared/Layout';
 import store from '@/store';
-import { StarIcon, StarHalfIcon } from 'vue-feather-icons';
-import feather from 'feather-icons';
+import Layout from '@/Shared/Layout';
+import ReviewSection from './Components/ReviewSection';
+import WriteOrEditReviewModal from './Components/WriteOrEditReviewModal.vue';
 
-let $errorModal, $productBigImg, $zoomImg, $galleryThumbnailWrapper;
+let $errorModal, $productBigImg, $zoomImg, $galleryThumbnailWrapper, $writeOrEditReviewModal;
 
 function product_thumbs (num) {
   var thumbs = document.querySelectorAll('.product__thumb a');
@@ -231,12 +220,16 @@ function product_thumbs (num) {
 
 export default {
   components: {
-    StarIcon,
+    ReviewSection,
+    WriteOrEditReviewModal,
+  },
+  props: {
+    productSlug: String,
+    isUserLoggedIn: Boolean,
   },
   layout: Layout,
   data() {
     return {
-      feather,
       isLoading: true,
       data: {},
       input: {
@@ -246,17 +239,16 @@ export default {
       errors: {}
     }
   },
+
   methods: {
     errorModalOKButtonOnClick() {
       $errorModal.modal('hide');
     },
-    ratingStarInputOnChange(event) {
-      console.log(event.target.value);
 
-      if (event.target.checked) {
-        this.input.rating = parseInt(event.target.value);
-      }
+    onWriteReviewSuccess() {
+      console.log('test');
     },
+
     productAddToCartButtonOnClick() {
       this.$store.commit('insertShoppingCartProduct', {
         product_id: this.data.product_id,
@@ -314,13 +306,16 @@ export default {
       if (!(value.match(/^[1-9][0-9]*$/) instanceof Array) || parseFloat(value) > this.data.quantity) {
         event.preventDefault();
       }
-    }
+    },
+    showWriteOrEditReviewModal() {
+      $writeOrEditReviewModal.modal('show');
+    },
   },
   mounted() {
     scripts.include('/assets/plugins/zoomove/dist/zoomove.min.js').then(() => {
       scripts.include('/assets/plugins/zoom/jquery.zoom.min.js').then(() => {
         $errorModal = $('#errorModal');
-        $galleryThumbnailWrapper = $(".gallery-thumbnail-wrapper");
+        $writeOrEditReviewModal = $(this.$refs.writeOrEditReviewModal?.$el);
 
         axios
         .get('/api'+document.location.pathname)
@@ -330,15 +325,20 @@ export default {
           if (data instanceof Object) {
             this.data = data;
 
+            this.$refs.writeOrEditReviewModal.input.product_id = this.data.product_id;
+
             setTimeout(() => {
               $productBigImg = $('.product__big__img');
+              $galleryThumbnailWrapper = $(".gallery-thumbnail-wrapper");
 
               $('.product__details__pic__slider').zoom();
+
+              // $galleryThumbnailWrapper.owlCarousel();
 
               $galleryThumbnailWrapper.owlCarousel({
                 autoWidth: true,
                 margin: 10,
-                dots: true
+                dots: false,
               });
 
               $galleryThumbnailWrapper.find('.gallery-thumbnail').on('click', event => {

@@ -23,11 +23,10 @@
     <link rel="stylesheet" href="{{mix('css/app.css')}}">
 
     @routes
-    <script src="{{mix('js/app.js')}}" defer></script>
   </head>
   <body class="font-sans antialiased">
     @inertia
-    <script src="/assets/js/jquery-2.2.5.min.js"></script>
+    <script src="/assets/js/jquery-3.5.1.min.js"></script>
     <script src="/assets/js/bootstrap.min.js"></script>
     <script src="/assets/js/jquery.magnific-popup.min.js"></script>
     <script src="/assets/js/jquery-ui.min.js"></script>
@@ -36,5 +35,6 @@
     <script src="/assets/js/jquery.slicknav.js"></script>
     <script src="/assets/js/owl.carousel.min.js"></script>
     <script src="/assets/js/jquery.nicescroll.min.js"></script>
+    <script src="{{mix('js/app.js')}}" defer></script>
   </body>
 </html>

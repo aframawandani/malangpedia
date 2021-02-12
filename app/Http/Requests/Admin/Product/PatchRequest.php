@@ -55,6 +55,7 @@ class PatchRequest extends FormRequest
             'quantity' => 'nullable|numeric|min:0',
             'price' => 'nullable|numeric|min:0',
             'categories' => 'required|array',
+            'galleries' => 'nullable|array',
         ];
     }
 

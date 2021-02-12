@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ShoppingCartProductController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\RegisterController;
+use App\Http\Controllers\Api\ReviewController;
 use App\Http\Resources\UserResource;
 
 use App\Http\Controllers\Api\Admin\CategoryController AS AdminCategoryController;
@@ -143,6 +144,17 @@ Route
 Route
 ::delete('/order', [OrderController::class, 'destroy'])
 ->name('api.order.delete')
+->middleware('auth');
+
+// Review
+
+Route
+::get('/review/{product_slug}', [ReviewController::class, 'get'])
+->name('api.review.get');
+
+Route
+::put('/review', [ReviewController::class, 'put'])
+->name('api.review.put')
 ->middleware('auth');
 
 // Admin Product

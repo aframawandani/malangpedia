@@ -156,6 +156,8 @@ class ProductController extends Controller
     {
         $product_data = $request->validated();
         $product = Product::where('product_id', $product_data['product_id'])->get()->first();
+        $gallery_insert_data_array = @$product_data['galleries']['insert'] ?? [];
+        $gallery_delete_data_array = @$product_data['galleries']['delete'] ?? [];
         $product_data_image = @$request->file('image');
         $product_data_image_size = @$_FILES['image']['size'];
         $product_2_category_insert_data_array = @$product_data['categories']['insert'] ?? [];
@@ -163,6 +165,28 @@ class ProductController extends Controller
         $product_2_category_delete_data_array = @$product_data['categories']['delete'] ?? [];
 
         unset($product_data['categories']);
+        unset($product_data['galleries']);
+
+        Gallery::whereIn('gallery_id', $gallery_delete_data_array)->delete();
+
+        $galleries_last_order = intval(@Gallery::select(DB::raw("MAX(`order`) AS `order`"))->where('product_id', $product_data['product_id'])->get()->first()->order);
+
+        foreach ($gallery_insert_data_array AS $gallery_insert_data)
+        {
+            $uuid = (string) Str::Uuid();
+            $absolute_path = public_path()."\\assets\\images\\galleries\\$uuid";
+            $image = ImageManagerStatic::make($gallery_insert_data);
+
+            $image->save("$absolute_path.jpg", 100, 'jpg');
+
+            $galleries_last_order++;
+
+            Gallery::create([
+                'product_id' => $product_data['product_id'],
+                'image' => $uuid,
+                'order' => $galleries_last_order,
+            ]);
+        }
 
         foreach ($product_data AS $name => $value)
         {
