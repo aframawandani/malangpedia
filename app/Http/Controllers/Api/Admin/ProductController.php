@@ -97,7 +97,7 @@ class ProductController extends Controller
         if (is_object($request->image))
         {
             $uuid = (string) Str::Uuid();
-            $absolute_path = public_path()."\\assets\\images\\products\\$uuid";
+            $absolute_path = public_path()."/assets/images/products/$uuid";
             $product_data['image'] = $uuid;
 
             $request->image->save("$absolute_path.jpg", 100, 'jpg');
@@ -132,7 +132,7 @@ class ProductController extends Controller
                 'order' => $i
             ];
             $uuid = (string) Str::Uuid();
-            $absolute_path = public_path()."\\assets\\images\\galleries\\$uuid";
+            $absolute_path = public_path()."/assets/images/galleries/$uuid";
             $gallery_data['image'] = $uuid;
             $image = ImageManagerStatic::make($product_gallery);
 
@@ -174,7 +174,7 @@ class ProductController extends Controller
         foreach ($gallery_insert_data_array AS $gallery_insert_data)
         {
             $uuid = (string) Str::Uuid();
-            $absolute_path = public_path()."\\assets\\images\\galleries\\$uuid";
+            $absolute_path = public_path()."/assets/images/galleries/$uuid";
             $image = ImageManagerStatic::make($gallery_insert_data);
 
             $image->save("$absolute_path.jpg", 100, 'jpg');
@@ -203,7 +203,7 @@ class ProductController extends Controller
 
             if (is_string($product->image))
             {
-                $path = "$public_path\\assets\\images\\products\\".$product->image;
+                $path = "$public_path/assets/images/products/".$product->image;
 
                 @unlink("$path.webp");
                 @unlink("$path.jpg");
@@ -212,7 +212,7 @@ class ProductController extends Controller
             if (is_object(@$product_data_image))
             {
                 $uuid = (string) Str::Uuid();
-                $absolute_path = "$public_path\\assets\\images\\products\\$uuid";
+                $absolute_path = "$public_path/assets/images/products/$uuid";
                 $product_data['image'] = $uuid;
 
                 $request->image->save("$absolute_path.jpg", 100, 'jpg');
